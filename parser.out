@@ -1,0 +1,564 @@
+Created by PLY version 3.10 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    THEN
+    RETURN
+    AVALMOD
+    VOID
+    EQUAL
+    AVALMULT
+    WHILE
+    DIFF
+    TRUE
+    MAIN
+    LESS
+    COLON
+    IF
+    FUNCTION
+    AVALDIV
+    FOR
+    AVALPLUS
+    ELSE
+    GREATER
+    AND
+    AVALMINUS
+    FALSE
+    GREATEQ
+    QMARK
+    BREAK
+    LESSEQ
+    NOT
+    OR
+    MOD
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> decSeq
+Rule 2     dec -> varDec
+Rule 3     dec -> decFunc
+Rule 4     dec -> decProc
+Rule 5     decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+Rule 6     decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+Rule 7     varDec -> type varSpecSeq SCOLON
+Rule 8     varSpec -> ID
+Rule 9     varSpec -> ID ATTR literal
+Rule 10    varSpec -> ID LBRAC num RBRAC
+Rule 11    varSpec -> ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC
+Rule 12    varSpecSeq -> varSpec COMMA varSpecSeq
+Rule 13    varSpecSeq -> varSpec
+Rule 14    paramList -> <empty>
+Rule 15    block -> <empty>
+Rule 16    literal -> num
+Rule 17    literalSeq -> <empty>
+Rule 18    type -> INT
+Rule 19    type -> STRING
+Rule 20    type -> BOOL
+Rule 21    decSeq -> dec decSeq
+Rule 22    decSeq -> dec
+Rule 23    empty -> <empty>
+Rule 24    binop -> num PLUS num
+Rule 25    binop -> num MINUS num
+Rule 26    binop -> num DIV num
+Rule 27    binop -> num MULT num
+Rule 28    num -> NUM
+
+Terminals, with rules where they appear
+
+AND                  : 
+ATTR                 : 9 11
+AVALDIV              : 
+AVALMINUS            : 
+AVALMOD              : 
+AVALMULT             : 
+AVALPLUS             : 
+BOOL                 : 20
+BREAK                : 
+COLON                : 
+COMMA                : 12
+DIFF                 : 
+DIV                  : 26
+ELSE                 : 
+EQUAL                : 
+FALSE                : 
+FOR                  : 
+FUNCTION             : 
+GREATEQ              : 
+GREATER              : 
+ID                   : 5 6 8 9 10 11
+IF                   : 
+INT                  : 18
+LBRAC                : 10 11
+LCBRAC               : 5 6 11
+LESS                 : 
+LESSEQ               : 
+LPAREN               : 5 6
+MAIN                 : 
+MINUS                : 25
+MOD                  : 
+MULT                 : 27
+NOT                  : 
+NUM                  : 28
+OR                   : 
+PLUS                 : 24
+QMARK                : 
+RBRAC                : 10 11
+RCBRAC               : 5 6 11
+RETURN               : 
+RPAREN               : 5 6
+SCOLON               : 7
+STRING               : 19
+THEN                 : 
+TRUE                 : 
+VOID                 : 
+WHILE                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+binop                : 
+block                : 5 6
+dec                  : 21 22
+decFunc              : 3
+decProc              : 4
+decSeq               : 1 21
+empty                : 
+literal              : 9
+literalSeq           : 11
+num                  : 10 11 16 24 24 25 25 26 26 27 27
+paramList            : 5 6
+program              : 0
+type                 : 5 7
+varDec               : 2
+varSpec              : 12 13
+varSpecSeq           : 7 12
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . decSeq
+    (21) decSeq -> . dec decSeq
+    (22) decSeq -> . dec
+    (2) dec -> . varDec
+    (3) dec -> . decFunc
+    (4) dec -> . decProc
+    (7) varDec -> . type varSpecSeq SCOLON
+    (5) decFunc -> . type ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (6) decProc -> . ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (18) type -> . INT
+    (19) type -> . STRING
+    (20) type -> . BOOL
+
+    ID              shift and go to state 5
+    INT             shift and go to state 3
+    STRING          shift and go to state 11
+    BOOL            shift and go to state 7
+
+    varDec                         shift and go to state 1
+    decProc                        shift and go to state 2
+    decSeq                         shift and go to state 4
+    program                        shift and go to state 6
+    dec                            shift and go to state 8
+    type                           shift and go to state 9
+    decFunc                        shift and go to state 10
+
+state 1
+
+    (2) dec -> varDec .
+
+    ID              reduce using rule 2 (dec -> varDec .)
+    INT             reduce using rule 2 (dec -> varDec .)
+    STRING          reduce using rule 2 (dec -> varDec .)
+    BOOL            reduce using rule 2 (dec -> varDec .)
+    $end            reduce using rule 2 (dec -> varDec .)
+
+
+state 2
+
+    (4) dec -> decProc .
+
+    ID              reduce using rule 4 (dec -> decProc .)
+    INT             reduce using rule 4 (dec -> decProc .)
+    STRING          reduce using rule 4 (dec -> decProc .)
+    BOOL            reduce using rule 4 (dec -> decProc .)
+    $end            reduce using rule 4 (dec -> decProc .)
+
+
+state 3
+
+    (18) type -> INT .
+
+    ID              reduce using rule 18 (type -> INT .)
+
+
+state 4
+
+    (1) program -> decSeq .
+
+    $end            reduce using rule 1 (program -> decSeq .)
+
+
+state 5
+
+    (6) decProc -> ID . LPAREN paramList RPAREN LCBRAC block RCBRAC
+
+    LPAREN          shift and go to state 12
+
+
+state 6
+
+    (0) S' -> program .
+
+
+
+state 7
+
+    (20) type -> BOOL .
+
+    ID              reduce using rule 20 (type -> BOOL .)
+
+
+state 8
+
+    (21) decSeq -> dec . decSeq
+    (22) decSeq -> dec .
+    (21) decSeq -> . dec decSeq
+    (22) decSeq -> . dec
+    (2) dec -> . varDec
+    (3) dec -> . decFunc
+    (4) dec -> . decProc
+    (7) varDec -> . type varSpecSeq SCOLON
+    (5) decFunc -> . type ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (6) decProc -> . ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (18) type -> . INT
+    (19) type -> . STRING
+    (20) type -> . BOOL
+
+    $end            reduce using rule 22 (decSeq -> dec .)
+    ID              shift and go to state 5
+    INT             shift and go to state 3
+    STRING          shift and go to state 11
+    BOOL            shift and go to state 7
+
+    varDec                         shift and go to state 1
+    decProc                        shift and go to state 2
+    decSeq                         shift and go to state 13
+    dec                            shift and go to state 8
+    type                           shift and go to state 9
+    decFunc                        shift and go to state 10
+
+state 9
+
+    (7) varDec -> type . varSpecSeq SCOLON
+    (5) decFunc -> type . ID LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (12) varSpecSeq -> . varSpec COMMA varSpecSeq
+    (13) varSpecSeq -> . varSpec
+    (8) varSpec -> . ID
+    (9) varSpec -> . ID ATTR literal
+    (10) varSpec -> . ID LBRAC num RBRAC
+    (11) varSpec -> . ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC
+
+    ID              shift and go to state 16
+
+    varSpec                        shift and go to state 14
+    varSpecSeq                     shift and go to state 15
+
+state 10
+
+    (3) dec -> decFunc .
+
+    ID              reduce using rule 3 (dec -> decFunc .)
+    INT             reduce using rule 3 (dec -> decFunc .)
+    STRING          reduce using rule 3 (dec -> decFunc .)
+    BOOL            reduce using rule 3 (dec -> decFunc .)
+    $end            reduce using rule 3 (dec -> decFunc .)
+
+
+state 11
+
+    (19) type -> STRING .
+
+    ID              reduce using rule 19 (type -> STRING .)
+
+
+state 12
+
+    (6) decProc -> ID LPAREN . paramList RPAREN LCBRAC block RCBRAC
+    (14) paramList -> .
+
+    RPAREN          reduce using rule 14 (paramList -> .)
+
+    paramList                      shift and go to state 17
+
+state 13
+
+    (21) decSeq -> dec decSeq .
+
+    $end            reduce using rule 21 (decSeq -> dec decSeq .)
+
+
+state 14
+
+    (12) varSpecSeq -> varSpec . COMMA varSpecSeq
+    (13) varSpecSeq -> varSpec .
+
+    COMMA           shift and go to state 18
+    SCOLON          reduce using rule 13 (varSpecSeq -> varSpec .)
+
+
+state 15
+
+    (7) varDec -> type varSpecSeq . SCOLON
+
+    SCOLON          shift and go to state 19
+
+
+state 16
+
+    (5) decFunc -> type ID . LPAREN paramList RPAREN LCBRAC block RCBRAC
+    (8) varSpec -> ID .
+    (9) varSpec -> ID . ATTR literal
+    (10) varSpec -> ID . LBRAC num RBRAC
+    (11) varSpec -> ID . LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC
+
+    LPAREN          shift and go to state 21
+    COMMA           reduce using rule 8 (varSpec -> ID .)
+    SCOLON          reduce using rule 8 (varSpec -> ID .)
+    ATTR            shift and go to state 22
+    LBRAC           shift and go to state 20
+
+
+state 17
+
+    (6) decProc -> ID LPAREN paramList . RPAREN LCBRAC block RCBRAC
+
+    RPAREN          shift and go to state 23
+
+
+state 18
+
+    (12) varSpecSeq -> varSpec COMMA . varSpecSeq
+    (12) varSpecSeq -> . varSpec COMMA varSpecSeq
+    (13) varSpecSeq -> . varSpec
+    (8) varSpec -> . ID
+    (9) varSpec -> . ID ATTR literal
+    (10) varSpec -> . ID LBRAC num RBRAC
+    (11) varSpec -> . ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC
+
+    ID              shift and go to state 25
+
+    varSpec                        shift and go to state 14
+    varSpecSeq                     shift and go to state 24
+
+state 19
+
+    (7) varDec -> type varSpecSeq SCOLON .
+
+    ID              reduce using rule 7 (varDec -> type varSpecSeq SCOLON .)
+    INT             reduce using rule 7 (varDec -> type varSpecSeq SCOLON .)
+    STRING          reduce using rule 7 (varDec -> type varSpecSeq SCOLON .)
+    BOOL            reduce using rule 7 (varDec -> type varSpecSeq SCOLON .)
+    $end            reduce using rule 7 (varDec -> type varSpecSeq SCOLON .)
+
+
+state 20
+
+    (10) varSpec -> ID LBRAC . num RBRAC
+    (11) varSpec -> ID LBRAC . num RBRAC ATTR LCBRAC literalSeq RCBRAC
+    (28) num -> . NUM
+
+    NUM             shift and go to state 27
+
+    num                            shift and go to state 26
+
+state 21
+
+    (5) decFunc -> type ID LPAREN . paramList RPAREN LCBRAC block RCBRAC
+    (14) paramList -> .
+
+    RPAREN          reduce using rule 14 (paramList -> .)
+
+    paramList                      shift and go to state 28
+
+state 22
+
+    (9) varSpec -> ID ATTR . literal
+    (16) literal -> . num
+    (28) num -> . NUM
+
+    NUM             shift and go to state 27
+
+    literal                        shift and go to state 29
+    num                            shift and go to state 30
+
+state 23
+
+    (6) decProc -> ID LPAREN paramList RPAREN . LCBRAC block RCBRAC
+
+    LCBRAC          shift and go to state 31
+
+
+state 24
+
+    (12) varSpecSeq -> varSpec COMMA varSpecSeq .
+
+    SCOLON          reduce using rule 12 (varSpecSeq -> varSpec COMMA varSpecSeq .)
+
+
+state 25
+
+    (8) varSpec -> ID .
+    (9) varSpec -> ID . ATTR literal
+    (10) varSpec -> ID . LBRAC num RBRAC
+    (11) varSpec -> ID . LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC
+
+    COMMA           reduce using rule 8 (varSpec -> ID .)
+    SCOLON          reduce using rule 8 (varSpec -> ID .)
+    ATTR            shift and go to state 22
+    LBRAC           shift and go to state 20
+
+
+state 26
+
+    (10) varSpec -> ID LBRAC num . RBRAC
+    (11) varSpec -> ID LBRAC num . RBRAC ATTR LCBRAC literalSeq RCBRAC
+
+    RBRAC           shift and go to state 32
+
+
+state 27
+
+    (28) num -> NUM .
+
+    COMMA           reduce using rule 28 (num -> NUM .)
+    SCOLON          reduce using rule 28 (num -> NUM .)
+    RBRAC           reduce using rule 28 (num -> NUM .)
+
+
+state 28
+
+    (5) decFunc -> type ID LPAREN paramList . RPAREN LCBRAC block RCBRAC
+
+    RPAREN          shift and go to state 33
+
+
+state 29
+
+    (9) varSpec -> ID ATTR literal .
+
+    COMMA           reduce using rule 9 (varSpec -> ID ATTR literal .)
+    SCOLON          reduce using rule 9 (varSpec -> ID ATTR literal .)
+
+
+state 30
+
+    (16) literal -> num .
+
+    COMMA           reduce using rule 16 (literal -> num .)
+    SCOLON          reduce using rule 16 (literal -> num .)
+
+
+state 31
+
+    (6) decProc -> ID LPAREN paramList RPAREN LCBRAC . block RCBRAC
+    (15) block -> .
+
+    RCBRAC          reduce using rule 15 (block -> .)
+
+    block                          shift and go to state 34
+
+state 32
+
+    (10) varSpec -> ID LBRAC num RBRAC .
+    (11) varSpec -> ID LBRAC num RBRAC . ATTR LCBRAC literalSeq RCBRAC
+
+    COMMA           reduce using rule 10 (varSpec -> ID LBRAC num RBRAC .)
+    SCOLON          reduce using rule 10 (varSpec -> ID LBRAC num RBRAC .)
+    ATTR            shift and go to state 35
+
+
+state 33
+
+    (5) decFunc -> type ID LPAREN paramList RPAREN . LCBRAC block RCBRAC
+
+    LCBRAC          shift and go to state 36
+
+
+state 34
+
+    (6) decProc -> ID LPAREN paramList RPAREN LCBRAC block . RCBRAC
+
+    RCBRAC          shift and go to state 37
+
+
+state 35
+
+    (11) varSpec -> ID LBRAC num RBRAC ATTR . LCBRAC literalSeq RCBRAC
+
+    LCBRAC          shift and go to state 38
+
+
+state 36
+
+    (5) decFunc -> type ID LPAREN paramList RPAREN LCBRAC . block RCBRAC
+    (15) block -> .
+
+    RCBRAC          reduce using rule 15 (block -> .)
+
+    block                          shift and go to state 39
+
+state 37
+
+    (6) decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .
+
+    ID              reduce using rule 6 (decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    INT             reduce using rule 6 (decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    STRING          reduce using rule 6 (decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    BOOL            reduce using rule 6 (decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    $end            reduce using rule 6 (decProc -> ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+
+
+state 38
+
+    (11) varSpec -> ID LBRAC num RBRAC ATTR LCBRAC . literalSeq RCBRAC
+    (17) literalSeq -> .
+
+    RCBRAC          reduce using rule 17 (literalSeq -> .)
+
+    literalSeq                     shift and go to state 40
+
+state 39
+
+    (5) decFunc -> type ID LPAREN paramList RPAREN LCBRAC block . RCBRAC
+
+    RCBRAC          shift and go to state 41
+
+
+state 40
+
+    (11) varSpec -> ID LBRAC num RBRAC ATTR LCBRAC literalSeq . RCBRAC
+
+    RCBRAC          shift and go to state 42
+
+
+state 41
+
+    (5) decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .
+
+    ID              reduce using rule 5 (decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    INT             reduce using rule 5 (decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    STRING          reduce using rule 5 (decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    BOOL            reduce using rule 5 (decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+    $end            reduce using rule 5 (decFunc -> type ID LPAREN paramList RPAREN LCBRAC block RCBRAC .)
+
+
+state 42
+
+    (11) varSpec -> ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC .
+
+    COMMA           reduce using rule 11 (varSpec -> ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC .)
+    SCOLON          reduce using rule 11 (varSpec -> ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC .)
+
