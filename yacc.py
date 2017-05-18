@@ -77,7 +77,7 @@ def p_paramList(p):
 def p_param(p):
     '''param : type ID
              | type ID LBRAC RBRAC'''
-    p[0] = p[1];
+    p[0] = ('param', [p[1], p[2]]);
 
 def p_block(p):
     'block : varDecList stmtList'
