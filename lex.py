@@ -1,6 +1,5 @@
 import ply.lex as lex
 
-literals = ['+','-','*','/' ]
 # Palavras reservadas
 reserved = {
 	'if'		: 'IF',
@@ -15,9 +14,10 @@ reserved = {
 	'int'		: 'INT',
 	'bool'		: 'BOOL',
 	'string'	: 'STRING',
-	'main'		: 'MAIN',
 	'true'		: 'TRUE',
-	'false'		: 'FALSE'
+	'false'		: 'FALSE',
+	'read'		: 'READ',
+	'write'		: 'WRITE'
 }
 
 # Nome dos tokens
@@ -25,7 +25,7 @@ tokens = ['NUM', 'PLUS', 'MINUS', 'MULT', 'DIV', 'MOD', 'LPAREN', 'RPAREN',
 		'LBRAC', 'RBRAC', 'LCBRAC', 'RCBRAC', 'COLON', 'SCOLON', 'COMMA',
 		'QMARK', 'NOT', 'AND', 'OR', 'GREATER', 'EQUAL', 'LESS', 'ATTR', 
 		'DIFF','LESSEQ', 'GREATEQ', 'AVALPLUS', 'AVALMINUS',
-		'AVALMULT', 'AVALDIV', 'AVALMOD', 'ID'] + list(reserved.values())
+		'AVALMULT', 'AVALDIV', 'AVALMOD', 'ID', 'STR'] + list(reserved.values())
 
 # Expressao regular dos tokens simples
 t_PLUS		= r'\+'
@@ -58,6 +58,7 @@ t_AVALMINUS	= r'-='
 t_AVALMULT	= r'\*='
 t_AVALDIV	= r'/='
 t_AVALMOD	= r'%='
+t_STR		= r'\"(\\.|[^"])*\"'
 # Ignorando espacos, tabs e comentarios
 t_ignore 			= ' \t'
 t_ignore_COMMENT	= r'(\/\*(.|\n)*\*\/)|(\/\/.*)'
@@ -92,32 +93,37 @@ def t_ID(t):
 
 lexer = lex.lex()
 
-# teste = '''
-#  a = 5;
-# '''
+teste = '''
+    int main() {
+        int a = 1;
+        if (a == 1) {
+            bool nice = true;
+        }
+    }
+'''
 
-# teste2 = '''
-# 3 + 4 * 10 { .
-#   + -20 *2 ^
-#   _t if (5 >= ab) then
-#   else b = 3
-#   // comentario
-#   teste
-#   /* oi
-#   3 + 5 */
-# }
-# '''
+teste2 = '''
+3 + 4 * 10 { .
+  + -20 *2 ^
+  _t if (5 >= ab) then
+  else b = 3
+  // comentario
+  teste
+  /* oi
+  3 + 5 */
+}
+'''
 
-#lexer.input(teste)
+lexer.input(teste)
 
-# print("Teste " + teste)
+print("Teste " + teste)
 
-# while True:
-# 	tok = lexer.token()
-# 	if not tok:
-# 		break
-# 	print(tok)
-# 	print('Tipo: '+ repr(tok.type)+ 
-# 		', Valor: '+ repr(tok.value)+ 
-# 		', Linha: '+ repr(tok.lineno)+ 
-# 		', Coluna: '+ repr(find_column(teste, tok)) + '\n')
+while True:
+	tok = lexer.token()
+	if not tok:
+		break
+	print(tok)
+	print('Tipo: '+ repr(tok.type)+ 
+		', Valor: '+ repr(tok.value)+ 
+		', Linha: '+ repr(tok.lineno)+ 
+		', Coluna: '+ repr(find_column(teste, tok)) + '\n')

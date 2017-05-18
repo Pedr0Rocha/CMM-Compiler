@@ -23,6 +23,14 @@ def p_decFunc(p):
     'decFunc : type ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
     p[0] = ('decFunc', [p[4], p[7]]);
 
+def p_decFunc_error(p):
+    'decFunc : type ID LPAREN error RPAREN LCBRAC block RCBRAC'
+    print("Syntax error at Function Declaration. Bad parameters!");
+
+def p_decFunc_error2(p):
+    'decFunc : type ID LPAREN paramList RPAREN LCBRAC error RCBRAC'
+    print("Syntax error at Function Declaration. Bad block!");
+
 def p_decProc(p):
     'decProc : ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
     p[0] = ('decProc', [p[3], p[6]]);
@@ -53,22 +61,178 @@ def p_varSpecSeq(p):
     else:
         p[0] = p[1];
 
+def p_literalSeq(p):
+    '''literalSeq : literal COMMA literalSeq
+                  | literal'''
+    if len(p) == 3:
+        p[0] = ('literalSeq', [p[1], p[3]]);
+    else:
+        p[0] = p[1];
+
 def p_paramList(p):
-    'paramList : '
-    pass
+    '''paramList : paramSeq
+                 | empty'''
+    p[0] = p[1];
+
+def p_param(p):
+    '''param : type ID
+             | type ID LBRAC RBRAC'''
+    p[0] = p[1];
 
 def p_block(p):
-    'block : '
-    pass
+    'block : varDecList stmtList'
+    p[0] = ('block', [p[1], p[2]]);
+
+def p_varDecList(p):
+    '''varDecList : varDec varDecList
+                  | empty'''
+    if len(p) == 3:
+        p[0] = ('varDecList', [p[1], p[2]]);
+    else:
+        p[0] = p[1];
+
+def p_var(p):
+    '''var : ID
+           | ID LBRAC exp RBRAC'''
+    if len(p) == 2:
+        p[0] = p[1];
+    else:
+        p[0] = ('varArray', [p[1], p[3]]);
+
+def p_exp(p):
+    '''exp : exp PLUS exp
+           | exp MINUS exp
+           | exp MULT exp
+           | exp DIV exp
+           | exp MOD exp
+           | exp EQUAL exp
+           | exp DIFF exp
+           | exp LESSEQ exp
+           | exp GREATEQ exp
+           | exp GREATER exp
+           | exp LESS exp
+           | exp AND exp
+           | exp OR exp
+           | NOT exp
+           | exp QMARK exp COLON exp
+           | subCall
+           | var
+           | literal
+           | LPAREN exp RPAREN'''
+    if len(p) == 4:
+        if p[1] != '(':
+            p[0] = (p[2], [p[1], p[3]]);
+        else:
+            p[0] = p[2];
+    elif len(p) == 3:
+        p[0] = ('NOT', [p[2]]);
+    elif len(p) == 6:
+        p[0] = ('TERNARYIF', [p[1], p[3], p[5]]);
+    else:
+        p[0] = p[1];
+
+
+def p_stmt(p):
+    '''stmt : ifStmt
+            | whileStmt
+            | forStmt
+            | breakStmt
+            | returnStmt
+            | readStmt
+            | writeStmt
+            | assign SCOLON
+            | subCall SCOLON'''
+    p[0] = p[1];
+
+def p_ifStmt(p):
+    '''ifStmt : IF LPAREN exp RPAREN LCBRAC block RCBRAC
+              | IF LPAREN exp RPAREN LCBRAC block RCBRAC ELSE RCBRAC block LCBRAC'''
+    if len(p) == 8:
+        p[0] = ('if', [p[3], p[6]]);
+    else:
+        p[0] = ('ifelse', [p[3], p[6], p[10]]);
+
+def p_whileStmt(p):
+    'whileStmt : WHILE LPAREN exp RPAREN LCBRAC block RCBRAC'
+    p[0] = ('while', [p[3], p[6]]);
+
+def p_forStmt(p):
+    'forStmt : FOR LPAREN assign SCOLON exp SCOLON assign RPAREN LCBRAC block RCBRAC'
+    p[0] = ('for', [p[3], p[5], p[7], p[10]]);
+
+def p_breakStmt(p):
+    'breakStmt : BREAK SCOLON'
+    p[0] = p[1];
+
+def p_returnStmt(p):
+    '''returnStmt : RETURN SCOLON
+                  | RETURN exp SCOLON'''
+    if len(p) == 3:
+        p[0] = p[1];
+    else:
+        p[0] = ('return', p[2]);
+
+def p_readStmt(p):
+    'readStmt : READ var SCOLON'
+    p[0] = ('read', [p[2]]);
+
+def p_writeStmt(p):
+    'writeStmt : WRITE expList SCOLON'
+    p[0] = ('write', [p[2]]);
+
+def p_assign(p):
+    '''assign : var ATTR exp
+              | var AVALPLUS exp
+              | var AVALMINUS exp
+              | var AVALMULT exp
+              | var AVALDIV exp
+              | var AVALMOD exp'''
+    p[0] = (p[2], [p[1], p[3]]);
+
+def p_subCall(p):
+    'subCall : ID LBRAC expList RBRAC'
+    p[0] = ('subCall', [p[1], p[3]]);
+
+def p_expList(p):
+    '''expList : expSeq
+               | empty'''
+    p[0] = p[1];
+
+def p_expSeq(p):
+    '''expSeq : exp COMMA expSeq
+              | exp'''
+    if len(p) == 4:
+        p[0] = ('expSeq', [p[1], p[3]]);
+    else:
+        p[0] = p[1];
+
+def p_stmtList(p):
+    '''stmtList : stmt stmtList
+                | empty'''
+    if len(p) == 3:
+        p[0] = ('stmtList', [p[1], p[2]]);
+    else:
+        p[0] = p[1];    
 
 def p_literal(p):
-    'literal : num'
+    '''literal : num
+               | str
+               | logic'''
+    p[0] = p[1];
+
+def p_num(p):
+    'num : NUM'
+    p[0] = p[1];
+
+def p_str(p):
+    'str : STR'
+    p[0] = p[1];
+
+def p_logic(p):
+    '''logic : TRUE
+             | FALSE'''
     p[0] = p[1];
     
-def p_lirealSeq(p):
-    'literalSeq : '
-    pass
-
 def p_type(p):
     '''type : INT
             | STRING
@@ -83,27 +247,37 @@ def p_decSeq(p):
     else: 
         p[0] = p[1]; 
 
+def p_paramSeq(p):
+    '''paramSeq : param COMMA paramSeq
+                | param'''
+    if len(p) == 4:
+        p[0] = ('paramSeq', [p[1], p[3]]);
+    else: 
+        p[0] = p[1]; 
+
 def p_empty(p):
     'empty :'
     pass
 
 # Error rule for syntax errors
+# def p_error(p):
+#     print("Syntax error in input!")
+
 def p_error(p):
-    print("Syntax error in input!")
-
-def p_binop(p):
-    '''binop : num PLUS num
-             | num MINUS num
-             | num DIV num
-             | num MULT num'''
-    p[0] = (p[2], [p[1], p[3]]);
-
-def p_num(p):
-    'num : NUM'
-    p[0] = p[1];
+    if p:
+         print("Syntax error at token", p.type)
+         # Just discard the token and tell the parser it's okay.
+         parser.errok()
+    else:
+         print("Syntax error at EOF")
 
 teste = '''
- int a = 5;
+    int main() {
+        int a = 1;
+        if (a == 1) {
+            bool nice = true;
+        }
+    }
 '''
 
 parser = yacc.yacc()

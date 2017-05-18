@@ -46,7 +46,7 @@ program => <decSeq>
 <returnStmt> => "return" ';'
               | "return" <exp> ';'
 
-<subCall> => id '(' <expList> ')'
+<subCall> => id '(' <expList> ')' ';'
 
 <assign> => <var> '='  <exp>
           | <var> "+=" <exp>
@@ -101,7 +101,7 @@ program => <decSeq>
 <stmtList> => <stmt> <stmtList>
             | ε
 
-<literalSeq> => <literal> <literalSeq>
+<literalSeq> => <literal> ',' <literalSeq>
               | <literal>
 
 <expList> => <expSeq>
