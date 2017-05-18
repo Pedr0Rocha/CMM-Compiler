@@ -94,26 +94,40 @@ def t_ID(t):
 lexer = lex.lex()
 
 teste = '''
-    int main() {
-        int a = 1;
-        if (a == 1) {
-            bool nice = true;
+    int v[10];
+    /*
+        Procedimento de ordenacao por troca
+        Observe como um parametro de arranjo e declarado
+    */
+    bubblesort(int v[], int n) {
+        int i=0, j;
+        bool trocou = true;
+        while (i < n-1 && trocou) {
+            trocou = false;
+            for (j=0; j < n-i-1; j+=1) {
+                if (v[j] > v[j+1]) {
+                    int aux;
+                    aux = v[j];
+                    v[j] = v[j+1];
+                    v[j+1] = aux;
+                    trocou = true;
+                }
+            }
+            i += 1;
+        }
+    }
+
+    main() {
+        int i;
+        for (i=0; i < 10; i+=1) {
+            read v[i];
+        }
+        bubblesort(v, 10);
+            for (i=0; i < 10; i+=1) {
+            write v[i], " ";
         }
     }
 '''
-
-teste2 = '''
-3 + 4 * 10 { .
-  + -20 *2 ^
-  _t if (5 >= ab) then
-  else b = 3
-  // comentario
-  teste
-  /* oi
-  3 + 5 */
-}
-'''
-
 lexer.input(teste)
 
 print("Teste " + teste)
