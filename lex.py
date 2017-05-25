@@ -1,6 +1,5 @@
 import ply.lex as lex
 
-# Palavras reservadas
 reserved = {
 	'if'		: 'IF',
 	'then'		: 'THEN',
@@ -20,14 +19,12 @@ reserved = {
 	'write'		: 'WRITE'
 }
 
-# Nome dos tokens
 tokens = ['NUM', 'PLUS', 'MINUS', 'MULT', 'DIV', 'MOD', 'LPAREN', 'RPAREN',
 		'LBRAC', 'RBRAC', 'LCBRAC', 'RCBRAC', 'COLON', 'SCOLON', 'COMMA',
 		'QMARK', 'NOT', 'AND', 'OR', 'GREATER', 'EQUAL', 'LESS', 'ATTR', 
 		'DIFF','LESSEQ', 'GREATEQ', 'AVALPLUS', 'AVALMINUS',
 		'AVALMULT', 'AVALDIV', 'AVALMOD', 'ID', 'STR'] + list(reserved.values())
 
-# Expressao regular dos tokens simples
 t_PLUS		= r'\+'
 t_MINUS 	= r'-'
 t_MULT		= r'\*'
@@ -59,17 +56,15 @@ t_AVALMULT	= r'\*='
 t_AVALDIV	= r'/='
 t_AVALMOD	= r'%='
 t_STR		= r'\"(\\.|[^"])*\"'
-# Ignorando espacos, tabs e comentarios
+# Ignoring spaces, tabs and comments
 t_ignore 			= ' \t'
 t_ignore_COMMENT	= r'(\/\*(.|\n)*\*\/)|(\/\/.*)'
 
-# Expressao regular com mais regras
 def t_NUM(t):
 	r'\d+'
 	t.value = int(t.value)
 	return t
 
-# Regra pra controle de numero de linha
 def t_newline(t):
 	r'\n+'
 	t.lexer.lineno += len(t.value)
@@ -82,8 +77,8 @@ def find_column(input,token):
     return column
 
 def t_error(t):
-	print("Caracter ilegal '%s'" % t.value[0])
-	print("Linha: " + repr(t.lineno) + " Coluna: " + repr(find_column(teste, t)) + '\n')
+	print("Illegal character '%s'" % t.value[0])
+	print("Line: " + repr(t.lineno) + " Column: " + repr(find_column(teste, t)) + '\n')
 	t.lexer.skip(1)
 
 def t_ID(t):
@@ -93,7 +88,7 @@ def t_ID(t):
 
 lexer = lex.lex()
 
-teste = '''
+test = '''
     int v[10];
     /*
         Procedimento de ordenacao por troca
@@ -128,16 +123,15 @@ teste = '''
         }
     }
 '''
-lexer.input(teste)
+lexer.input(test)
 
-print("Teste " + teste)
+print("Test " + test)
 
 while True:
-	tok = lexer.token()
-	if not tok:
-		break
-	print(tok)
-	print('Tipo: '+ repr(tok.type)+ 
-		', Valor: '+ repr(tok.value)+ 
-		', Linha: '+ repr(tok.lineno)+ 
-		', Coluna: '+ repr(find_column(teste, tok)) + '\n')
+    tok = lexer.token()
+    last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)
+    column = lex.lexer.lexpos - last_cr - 1
+    if not tok:
+        break
+    lexToken = 'LexToken(Token: %s, Value: %r, Line: %d, Column: %d)' % (tok.type, tok.value, tok.lineno, column)
+    print (lexToken)

@@ -9,6 +9,24 @@ class TreeNode():
         self.data = data;
         self.children = children;
 
+    def pretty_print(TreeNode):
+        print("Pretty print AST");
+
+    def __repr__(self):
+      return "TreeNode(", self.data, ",", self.children, ")";
+
+precedence = (
+    ('left', 'MULT', 'DIV', 'MOD'),
+    ('left', 'PLUS', 'MINUS'),
+    ('right', 'NOT'),
+    ('left', 'GREATEQ', 'LESSEQ', 'GREATER', 'LESS'),
+    ('left', 'EQUAL', 'DIFF'),
+    ('left', 'AND'),
+    ('left', 'OR'),
+    ('right', 'QMARK')
+)
+
+
 def p_program(p):
     'program : decSeq'
     p[0] = ('program', p[1]);
@@ -22,14 +40,6 @@ def p_dec(p):
 def p_decFunc(p):
     'decFunc : type ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
     p[0] = ('decFunc', [p[4], p[7]]);
-
-def p_decFunc_error(p):
-    'decFunc : type ID LPAREN error RPAREN LCBRAC block RCBRAC'
-    print("Syntax error at Function Declaration. Bad parameters! Line: " + repr(p.lineno));
-
-def p_decFunc_error2(p):
-    'decFunc : type ID LPAREN paramList RPAREN LCBRAC error RCBRAC'
-    print("Syntax error at Function Declaration. Bad block! Line: " + repr(p.lineno));
 
 def p_decProc(p):
     'decProc : ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
@@ -269,7 +279,7 @@ def p_error(p):
     else:
          print("Syntax error at EOF")
 
-teste = '''
+test = '''
     int v[10];
     /*
         Procedimento de ordenacao por troca
@@ -306,4 +316,4 @@ teste = '''
 '''
 
 parser = yacc.yacc()
-print parser.parse(teste)
+print parser.parse(test)
