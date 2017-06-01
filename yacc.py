@@ -1,19 +1,8 @@
 import ply.yacc as yacc
 import lex
+import ast
 
 tokens = lex.tokens
-
-class TreeNode():
-    """docstring for TreeNode"""
-    def __init__(self, data, children):
-        self.data = data;
-        self.children = children;
-
-    def pretty_print(TreeNode):
-        print("Pretty print AST");
-
-    def __repr__(self):
-      return "TreeNode(", self.data, ",", self.children, ")";
 
 precedence = (
     ('left', 'MULT', 'DIV', 'MOD'),
