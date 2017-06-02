@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 import lex
-import ast
+import ast 
 
 tokens = lex.tokens
 
@@ -99,19 +99,7 @@ def p_var(p):
         p[0] = ('varArray', [p[1], p[3]]);
 
 def p_exp(p):
-    '''exp : exp PLUS exp
-           | exp MINUS exp
-           | exp MULT exp
-           | exp DIV exp
-           | exp MOD exp
-           | exp EQUAL exp
-           | exp DIFF exp
-           | exp LESSEQ exp
-           | exp GREATEQ exp
-           | exp GREATER exp
-           | exp LESS exp
-           | exp AND exp
-           | exp OR exp
+    '''exp : binop
            | NOT exp
            | exp QMARK exp COLON exp
            | subCall
@@ -130,6 +118,26 @@ def p_exp(p):
     else:
         p[0] = p[1];
 
+def p_binop(p):
+  '''binop : exp PLUS exp
+           | exp MINUS exp
+           | exp MULT exp
+           | exp DIV exp
+           | exp MOD exp
+           | exp EQUAL exp
+           | exp DIFF exp
+           | exp LESSEQ exp
+           | exp GREATEQ exp
+           | exp GREATER exp
+           | exp LESS exp
+           | exp AND exp
+           | exp OR exp'''
+  p[0] = { 
+    'op'   : p[2], 
+    'left' : p[1], 
+    'right': p[3], 
+    'pos'  : [p.lineno, p.column] 
+  };
 
 def p_stmt(p):
     '''stmt : ifStmt
