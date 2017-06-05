@@ -211,3 +211,60 @@ class WhileTreeNode(TreeNode):
 		print "While statement begin";
 		print self.data['block'].prettyPrintNode();
 		print "While statement end";
+
+class ForTreeNode(TreeNode):
+
+	def evaluate(self):
+		expEval = self.data['exp'].evaluate();
+		
+		self.data['assignInit'].evaluate();
+
+		if (expEval != CMMTypes.BOOL):
+			print "Sematic error at line " + self.data['pos']['line'] + " and column " + self.data['pos']['column'];
+			print "Expression of for statement must be a boolean, " + expEval + " found instead."
+
+		self.data['assignEnd'].evaluate();
+		self.data['block'].evaluate();
+
+	def prettyPrintNode(self):
+		print "For statement begin";
+		print self.data['assignInit'].prettyPrintNode();
+		print self.data['exp'].prettyPrintNode();
+		print self.data['assignEnd'].prettyPrintNode();
+		print self.data['block'].prettyPrintNode();
+		print "For statement end";
+
+class ReadTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['var'].evaluate();
+
+	def prettyPrintNode(self):
+		print "Reading: " + self.data['var'].prettyPrintNode();
+
+class WriteTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['expList'].evaluate();
+
+	def prettyPrintNode(self):
+		print "Writing: " + self.data['var'].prettyPrintNode();
+
+class AssignTreeNode(TreeNode):
+	# varEval wont work here
+	def evaluate(self):
+		varEval = self.data['var'].evaluate();
+		expEval = self.data['exp'].evaluate();
+
+		if (self.data['op'] != '='):
+			if (varEval == CMMTypes.INT and
+				expEval == CMMTypes.INT):
+				return CMMTypes.INT;
+			else:
+				print "Sematic error at line " + self.data['pos']['line'] + " and column " + self.data['pos']['column'];
+				print "When using operator " + self.data['op'] + " left and right hand must be type INT."
+		else:
+			# check variable in symbol table, expEval must be equal to var type
+
+	def prettyPrintNode(self):
+		pass;		

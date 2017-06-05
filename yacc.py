@@ -277,7 +277,6 @@ def p_assign(p):
               | var AVALMULT exp
               | var AVALDIV exp
               | var AVALMOD exp'''
-    p[0] = (p[2], [p[1], p[3]]);
     p[0] = AssignTreeNode({
             'var' : p[1],
             'op'  : p[2],
