@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 import lex
 import ast 
+import helpers
 
 tokens = lex.tokens
 
@@ -17,7 +18,7 @@ precedence = (
 
 def p_program(p):
     'program : decSeq'
-    p[0] = ProgramTreeNode({
+    p[0] = ast.ProgramTreeNode({
             'program' : p[1],
         });
 
@@ -29,32 +30,32 @@ def p_dec(p):
 
 def p_decFunc(p):
     'decFunc : type ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
-    p[0] = ('decFunc', [p[1], p[2], p[4], p[7]]);
-    p[0] = DecFuncTreeNode({
+    #p[0] = ('decFunc', [p[1], p[2], p[4], p[7]]);
+    p[0] = ast.DecFuncTreeNode({
             'type'      : p[1],
             'id'        : p[2],
             'paramList' : p[4],
             'block'     : p[7],
-            'pos'       : { 'line' : p.lineno, 'column' : p.column },
+            'pos'       : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_decProc(p):
     'decProc : ID LPAREN paramList RPAREN LCBRAC block RCBRAC'
-    p[0] = ('decProc', [p[1], p[3], p[6]]);
-    p[0] = DecProcTreeNode({
+    #p[0] = ('decProc', [p[1], p[3], p[6]]);
+    p[0] = ast.DecProcTreeNode({
             'id'        : p[1],
             'paramList' : p[3],
             'block'     : p[7],
-            'pos'       : { 'line' : p.lineno, 'column' : p.column },
+            'pos'       : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_varDec(p):
     'varDec : type varSpecSeq SCOLON'
-    p[0] = ('varDec', [p[1], p[2]]);
-    p[0] = VarDecTreeNode({
+    #p[0] = ('varDec', [p[1], p[2]]);
+    p[0] = ast.VarDecTreeNode({
             'type'       : p[1],
             'varSpecSeq' : p[2],
-            'pos'        : { 'line' : p.lineno, 'column' : p.column },
+            'pos'        : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_varSpec(p):
@@ -63,7 +64,11 @@ def p_varSpec(p):
                | ID LBRAC num RBRAC
                | ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC'''
     if len(p) == 2:
-        p[0] = p[1];
+        #p[0] = p[1];
+        p[0] = ast.SimpleVarDecTreeNode({
+                'id' : p[1],
+                'pos': { 'line' : p.lineno, 'column' : p.lexpos },
+            });
     elif len(p) == 4:
         p[0] = ('varSpec', [p[1], p[3]]);
     elif len(p) == 5:
@@ -95,8 +100,8 @@ def p_paramList(p):
 def p_param(p):
     '''param : type ID
              | type ID LBRAC RBRAC'''
-    p[0] = ('param', [p[1], p[2]]);
-    p[0] = ParamTreeNode({
+    #p[0] = ('param', [p[1], p[2]]);
+    p[0] = ast.ParamTreeNode({
             'type'     : p[1],
             'id'       : p[2],
             'isVector' : len(p) == 5,
@@ -104,8 +109,8 @@ def p_param(p):
 
 def p_block(p):
     'block : varDecList stmtList'
-    p[0] = ('block', [p[1], p[2]]);
-    p[0] = BlockTreeNode({
+    #p[0] = ('block', [p[1], p[2]]);
+    p[0] = ast.BlockTreeNode({
             'varDecList' : p[1],
             'stmtList'   : p[2],
         });
@@ -114,8 +119,8 @@ def p_varDecList(p):
     '''varDecList : varDec varDecList
                   | empty'''
     if len(p) == 3:
-        p[0] = ('varDecList', [p[1], p[2]]);
-        p[0] = VarDecListTreeNode({
+        #p[0] = ('varDecList', [p[1], p[2]]);
+        p[0] = ast.VarDecListTreeNode({
                 'varDec'     : p[1],
                 'varDecList' : p[2],
             });
@@ -126,15 +131,17 @@ def p_var(p):
     '''var : ID
            | ID LBRAC exp RBRAC'''
     if len(p) == 2:
-        p[0] = p[1];
-        p[0] = IDTreeNode({
-                'id' = p[1],
+        #p[0] = p[1];
+        p[0] = ast.IDTreeNode({
+                'id'  : p[1],
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
             });
     else:
-        p[0] = ('varArray', [p[1], p[3]]);
-        p[0] = IDVectorTreeNode({
-                'id' = p[1],
-                'exp' = p[3],
+        #p[0] = ('varArray', [p[1], p[3]]);
+        p[0] = ast.IDVectorTreeNode({
+                'id'  : p[1],
+                'exp' : p[3],
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
             });
 
 def p_exp(p):
@@ -148,20 +155,20 @@ def p_exp(p):
     if len(p) == 4:
             p[0] = p[2];
     elif len(p) == 3:
-        p[0] = ('not', [p[2]]);
-        p[0] = ExpressionTreeNode({
+        #p[0] = ('not', [p[2]]);
+        p[0] = ast.ExpressionTreeNode({
                 'op'  : 'not',
                 'exp' : p[2],
-                'pos' : { 'line' : p.lineno, 'column' : p.column },
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
             });
     elif len(p) == 6:
-        p[0] = ('ternaryif', [p[1], p[3], p[5]]);
-        p[0] = ExpressionTreeNode({
+        #p[0] = ('ternaryif', [p[1], p[3], p[5]]);
+        p[0] = ast.ExpressionTreeNode({
                 'op'        : 'ternaryif',
                 'expIf'     : p[1],
                 'expThen'   : p[3],
                 'expElse'   : p[5],
-                'pos'       : { 'line' : p.lineno, 'column' : p.column },
+                'pos'       : { 'line' : p.lineno, 'column' : p.lexpos },
             });
     else:
         p[0] = p[1];
@@ -180,11 +187,11 @@ def p_binop(p):
            | exp LESS exp
            | exp AND exp
            | exp OR exp'''
-  p[0] = BinopTreeNode({ 
+  p[0] = ast.BinopTreeNode({ 
             'op'   : p[2], 
             'left' : p[1], 
             'right': p[3], 
-            'pos'  : { 'line' : p.lineno, 'column' : p.column },
+            'pos'  : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_stmt(p):
@@ -203,39 +210,39 @@ def p_ifStmt(p):
     '''ifStmt : IF LPAREN exp RPAREN LCBRAC block RCBRAC
               | IF LPAREN exp RPAREN LCBRAC block RCBRAC ELSE RCBRAC block LCBRAC'''
     if len(p) == 8:
-        p[0] = ('if', [p[3], p[6]]);
-        p[0] = IfTreeNode({
+        #p[0] = ('if', [p[3], p[6]]);
+        p[0] = ast.IfTreeNode({
                 'exp'   : p[3],
                 'block' : p[6],
-                'pos'   : { 'line' : p.lineno, 'column' : p.column },
+                'pos'   : { 'line' : p.lineno, 'column' : p.lexpos },
             });
     else:
-        p[0] = ('ifelse', [p[3], p[6], p[10]]);
-        p[0] = IfElseTreeNode({
+        #p[0] = ('ifelse', [p[3], p[6], p[10]]);
+        p[0] = ast.IfElseTreeNode({
                 'exp'       : p[3],
                 'block'     : p[6],
                 'blockElse' : p[10], 
-                'pos'       : { 'line' : p.lineno, 'column' : p.column },
+                'pos'       : { 'line' : p.lineno, 'column' : p.lexpos },
             });
 
 def p_whileStmt(p):
     'whileStmt : WHILE LPAREN exp RPAREN LCBRAC block RCBRAC'
-    p[0] = ('while', [p[3], p[6]]);
-    p[0] = WhileTreeNode({
+    #p[0] = ('while', [p[3], p[6]]);
+    p[0] = ast.WhileTreeNode({
             'exp'   : p[3],
             'block' : p[6],
-            'pos'   : { 'line' : p.lineno, 'column' : p.column },
+            'pos'   : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_forStmt(p):
     'forStmt : FOR LPAREN assign SCOLON exp SCOLON assign RPAREN LCBRAC block RCBRAC'
-    p[0] = ('for', [p[3], p[5], p[7], p[10]]);
-    p[0] = ForTreeNode({
+    #p[0] = ('for', [p[3], p[5], p[7], p[10]]);
+    p[0] = ast.ForTreeNode({
             'assignInit' : p[3],
             'exp' : p[5],
             'assignEnd' : p[7],
             'block' : p[10],
-            'pos' : { 'line' : p.lineno, 'column' : p.column },
+            'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_breakStmt(p):
@@ -256,18 +263,18 @@ def p_returnStmt_error(p):
 
 def p_readStmt(p):
     'readStmt : READ var SCOLON'
-    p[0] = ('read', [p[2]]);
-    p[0] = ReadTreeNode({
+    #p[0] = ('read', [p[2]]);
+    p[0] = ast.ReadTreeNode({
             'var' : p[2],
-            'pos' : { 'line' : p.lineno, 'column' : p.column },
+            'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_writeStmt(p):
     'writeStmt : WRITE expList SCOLON'
-    p[0] = ('write', [p[2]]);
-    p[0] = WriteTreeNode({
+    #p[0] = ('write', [p[2]]);
+    p[0] = ast.WriteTreeNode({
             'expList' : p[2],
-            'pos' : { 'line' : p.lineno, 'column' : p.column },
+            'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_assign(p):
@@ -277,20 +284,21 @@ def p_assign(p):
               | var AVALMULT exp
               | var AVALDIV exp
               | var AVALMOD exp'''
-    p[0] = AssignTreeNode({
+    #p[0] = (p[2], [p[1], p[3]]);
+    p[0] = ast.AssignTreeNode({
             'var' : p[1],
             'op'  : p[2],
             'exp' : p[3],
-            'pos' : { 'line' : p.lineno, 'column' : p.column },
+            'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_subCall(p):
     'subCall : ID LPAREN expList RPAREN'
-    p[0] = ('subCall', [p[1], p[3]]);
-    p[0] = SubCallTreeNode({
+    #p[0] = ('subCall', [p[1], p[3]]);
+    p[0] = ast.SubCallTreeNode({
             'id'      : p[1],
             'expList' : p[3],
-            'pos'     : { 'line' : p.lineno, 'column' : p.column },
+            'pos'     : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
 def p_expList(p):
@@ -322,23 +330,23 @@ def p_literal(p):
 
 def p_num(p):
     'num : NUM'
-    p[0] = p[1];
-    p[0] = NumTreeNode({
+    #p[0] = p[1];
+    p[0] = ast.NumTreeNode({
             'value' : p[1],
         });
  
 def p_str(p):
     'str : STR'
-    p[0] = p[1];
-    p[0] = StrTreeNode({
+    #p[0] = p[1];
+    p[0] = ast.StrTreeNode({
             'value' : p[1],
         });
 
 def p_logic(p):
     '''logic : TRUE
              | FALSE'''
-    p[0] = p[1];
-    p[0] = LogicTreeNode({
+    #p[0] = p[1];
+    p[0] = ast.LogicTreeNode({
             'value' : p[1],
         });
     
@@ -353,6 +361,9 @@ def p_decSeq(p):
               | dec'''
     if len(p) == 3:
         p[0] = ('decSeq', [p[1], p[2]]);
+        p[0] = ast.DecSeqTreeNode({
+                'dec' : p[1],
+            });
     else: 
         p[0] = p[1]; 
 
@@ -410,5 +421,8 @@ test = '''
     }
 '''
 
+test = 'int a; main() { a = 4 + 5; }'
+
 parser = yacc.yacc()
-print parser.parse(test)
+root = parser.parse(test)
+root.prettyPrintNode();

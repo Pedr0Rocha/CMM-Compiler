@@ -123,6 +123,9 @@ test = '''
         }
     }
 '''
+
+test = 'int a; main() { a = 4 + 5; }'
+
 lexer.input(test)
 
 print("Test " + test)
