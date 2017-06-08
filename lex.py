@@ -124,7 +124,7 @@ test = '''
     }
 '''
 
-test = 'int a; main() { a = 4 + 5; }'
+test = 'int a; int a;'
 
 lexer.input(test)
 

@@ -1,6 +1,10 @@
 '''
 	Side structures and helpers to the semantic analyser.
 '''
+# TODO 
+# tirar symbol e fazer lista de tipos apenas
+#
+
 insideLoops = 0;
 
 def canBreakOrReturn():
@@ -8,6 +12,9 @@ def canBreakOrReturn():
 
 currentProc = None;
 currentFunc = None;
+
+currentType = None;
+currentScope = 0;
 
 def getCurrentFuncType():
 	pass;
@@ -22,36 +29,56 @@ def addOrUpdateSymbol(symbol, sType):
 			'type' : sType 
 		});
 	else:
-		symbols[symbol] = [{
+		symbols[symbol] = [currentScope, {
 			'symbol' : symbol, 
 			'type' : sType 
 		}];
+	print symbols;
 
-def addNewScope(mark):
+def addNewScope():
+	scopeDelimiter = "scope-" + str(currentScope + 1);
 	for key in symbols:
-		symbols[key].append(mark);
+		symbols[key].append(scopeDelimiter);
 
-def removeScope(mark):
+def removeScope():
+	scopeDelimiter = "scope-" + str(currentScope - 1);
 	for key in symbols:
-		if (len(symbols[key]) > 1):
-			while (symbols[key].pop() != mark):
-				pass;
+		if (len(symbols[key]) > 0):
+			while (symbols[key].pop() != scopeDelimiter):
+				if (len(symbols[key]) == 0):
+					break;
+			pass;
 	
 def addFunctionOrProc(method):
 	if (not symbols.has_key(method['name'])):
 		symbols[method['name']] = [method];
-	else:
-		return "Semantic error: There is already a function or procedure named " + method['name'];
 
 def getVariableType(var):
 	if (symbols.has_key(var)):
-		symbolTable = symbols[var][:];
-		symbolTable.reverse();
-		for element in symbolTable:
-			if (element['symbol'] == var):
-				return element['type'];
+		symbolList = symbols[var][:];
+		symbolList.reverse();
+		return element['type'];
 	else:
 		return False;
+
+def getCMMType(varType):
+    if (varType == 'int'):
+    	return CMMTypes.INT;
+    if (varType == 'string'):
+    	return CMMTypes.STRING;
+    if (varType == 'bool'):
+    	return CMMTypes.BOOL;
+    if (varType == 'array_int'):
+    	return CMMTypes.ARRAY_INT;
+    if (varType == 'array_string'):
+    	return CMMTypes.ARRAY_STRING;
+    if (varType == 'array_bool'):
+    	return CMMTypes.ARRAY_BOOL;
+
+def canCreateVar(var):
+	if (len(symbols[var]) == 0):
+		return True;
+	return symbols[var][len(symbols[var]) - 1] != currentScope;
 
 def prettyPrintSymbols():
 	for key in symbols:
@@ -62,22 +89,17 @@ def prettyPrintSymbols():
 # addOrUpdateSymbol('a', 'INT2');
 # addOrUpdateSymbol('b', 'STRING');
 
-# print "A Var Type " + str(getVariableType('a'));
-
 # addNewScope('scope1');
 
 # addOrUpdateSymbol('a', 'INT3');
 # addOrUpdateSymbol('a', 'INT4');
-# addOrUpdateSymbol('b', 'STRING');
-
-# print "A Var Type " + str(getVariableType('a'));
+# addOrUpdateSymbol('b', 'STRING2');
 
 # addNewScope('scope2');
 
 # addOrUpdateSymbol('c', 'INT5');
 # addOrUpdateSymbol('a', 'INT6');
-# addOrUpdateSymbol('b', 'STRING');
-# print "A Var Type " + str(getVariableType('a'));
+# addOrUpdateSymbol('b', 'STRING3');
 
 # prettyPrintSymbols()
 

@@ -35,13 +35,17 @@ class ProgramTreeNode(TreeNode):
 
 	def prettyPrintNode(self):
 		print "Program Start";
+		helpers.addNewScope();
 		print self.data['program'].prettyPrintNode();
+		helpers.removeScope();
 		print "Program End";
 
 class DecFuncTreeNode(TreeNode):
 
 	def evaluate(self):
 		# check symbol table for function ID
+		# { name: funcName, type: funcType, paramsTypes: [int, int] }
+		# int a, int b
 		self.data['paramList'].evaluate();
 		self.data['block'].evaluate();
 
@@ -62,21 +66,13 @@ class DecProcTreeNode(TreeNode):
 		print self.data['paramList'].prettyPrintNode();
 		print self.data['block'].prettyPrintNode();
 
-class SimpleVarDecTreeNode(TreeNode):
-
-	def evaluate(self):
-		pass;
-
-	def prettyPrintNode(self):
-		pass;
-
 class VarDecTreeNode(TreeNode):
 
 	def evaluate(self):
+		helpers.currentType = self.data['type'];
 		self.data['varSpecSeq'].evaluate();
 
 	def prettyPrintNode(self):
-		print "Variable Declaration - Type: " + self.data['type'];
 		print self.data['varSpecSeq'].prettyPrintNode();
 
 class VarDecListTreeNode(TreeNode):
@@ -89,6 +85,48 @@ class VarDecListTreeNode(TreeNode):
 		print "Variable Declaration List"
 		print self.data['varDec'].prettyPrintNode();
 		print self.data['varDecList'].prettyPrintNode();
+
+class VarSeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['var'].evaluate();
+		if (self.data.has_key('varSeq')):
+			self.data['varSeq'].evaluate();
+
+	def prettyPrintNode(self):
+		print self.data['var'].prettyPrintNode();
+		if (self.data.has_key('varSeq')):
+			self.data['varSeq'].prettyPrintNode();
+
+class VarTreeNode(TreeNode):
+
+	def evaluate(self):
+		if (helpers.canCreateVar(self.data['id'])):
+			addVar = True;
+
+			if (self.data.has_key('literal')):
+				literalEval = self.data['literal'].evaluate();
+				if (helpers.getCMMType(helpers.currentType) != literalEval):
+					semanticError(self.data['pos']);
+					print "Wrong type assigned to variable. Expecting " + helpers.currentType;
+					addVar = False;
+
+			if (self.data.has_key('size')):
+				if (self.data.has_key('literalSeq')):
+					literalSeqEval = self.data['literalSeq'].evaluate();
+					if (helpers.getCMMType("array_" + helpers.currentType) != literalSeqEval):
+						semanticError(self.data['pos']);
+						print "Wrong type assigned to vector. Expecting array of " + helpers.currentType;
+						addVar = False;
+
+			if (addVar):
+				helpers.addOrUpdateSymbol(self.data['id'], helpers.currentType);
+		else:
+			semanticError(self.data['pos']);
+			print "Variable already defined on a previous scope";
+
+	def prettyPrintNode(self):
+		print self.data['id'] + " variable declaration";
 
 class ParamTreeNode(TreeNode):
 
@@ -105,8 +143,10 @@ class ParamTreeNode(TreeNode):
 class BlockTreeNode(TreeNode):
 
 	def evaluate(self):
+		helpers.addNewScope();
 		self.data['varDecList'].evaluate();
 		self.data['stmtList'].evaluate();
+		helpers.removeScope();
 
 	def prettyPrintNode(self):
 		print "Block"
@@ -334,8 +374,13 @@ class SubCallTreeNode(TreeNode):
 class DecSeqTreeNode(TreeNode):
 
 	def evaluate(self):
-		return self.data['dec'].evaluate();
+		self.data['dec'].evaluate();
+		if (self.data.has_key('decSeq')):
+			self.data['decSeq'].evaluate();
+
 
 	def prettyPrintNode(self):
 		print "Sequence of declarations";
 		print self.data['dec'].prettyPrintNode();
+
+

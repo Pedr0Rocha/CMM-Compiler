@@ -65,24 +65,46 @@ def p_varSpec(p):
                | ID LBRAC num RBRAC ATTR LCBRAC literalSeq RCBRAC'''
     if len(p) == 2:
         #p[0] = p[1];
-        p[0] = ast.SimpleVarDecTreeNode({
-                'id' : p[1],
-                'pos': { 'line' : p.lineno, 'column' : p.lexpos },
+        p[0] = ast.VarTreeNode({
+                'id'  : p[1],
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
             });
     elif len(p) == 4:
-        p[0] = ('varSpec', [p[1], p[3]]);
+        #p[0] = ('varSpec', [p[1], p[3]]);
+        p[0] = ast.VarTreeNode({
+                'id'      : p[1],
+                'literal' : p[3],
+                'pos'     : { 'line' : p.lineno, 'column' : p.lexpos },
+            });
     elif len(p) == 5:
-        p[0] = ('varSpecArray', [p[1], p[3]]);
+        #p[0] = ('varSpecArray', [p[1], p[3]]);
+        p[0] = ast.VarTreeNode({
+                'id'   : p[1],
+                'size' : p[3],
+                'pos'  : { 'line' : p.lineno, 'column' : p.lexpos },
+            });
     elif len(p) == 6:
-        p[0] = ('varSpecArrayAssigned', [p[1], p[3], p[7]]);
+        #p[0] = ('varSpecArrayAssigned', [p[1], p[3], p[7]]);
+        p[0] = ast.VarTreeNode({
+                'id'         : p[1],
+                'size'       : p[3],
+                'literalSeq' : p[7],
+                'pos'        : { 'line' : p.lineno, 'column' : p.lexpos },
+            });
 
 def p_varSpecSeq(p):
     '''varSpecSeq : varSpec COMMA varSpecSeq
                   | varSpec'''
+        #p[0] = ('varSpecSeq', [p[1], p[3]]);
     if len(p) == 4:
-        p[0] = ('varSpecSeq', [p[1], p[3]]);
+        p[0] = ast.VarSeqTreeNode({
+            'var'    : p[1],
+            'varSeq' : p[3],
+        });
     else:
-        p[0] = p[1];
+        p[0] = ast.VarSeqTreeNode({
+                'var'    : p[1],
+            });
 
 def p_literalSeq(p):
     '''literalSeq : literal COMMA literalSeq
@@ -360,12 +382,16 @@ def p_decSeq(p):
     '''decSeq : dec decSeq
               | dec'''
     if len(p) == 3:
-        p[0] = ('decSeq', [p[1], p[2]]);
+        #p[0] = ('decSeq', [p[1], p[2]]);
+        p[0] = ast.DecSeqTreeNode({
+                'dec'    : p[1],
+                'decSeq' : p[2],
+            });
+    else: 
+        #p[0] = p[1]; 
         p[0] = ast.DecSeqTreeNode({
                 'dec' : p[1],
             });
-    else: 
-        p[0] = p[1]; 
 
 def p_paramSeq(p):
     '''paramSeq : param COMMA paramSeq
@@ -421,7 +447,7 @@ test = '''
     }
 '''
 
-test = 'int a; main() { a = 4 + 5; }'
+test = 'int a; int a;'
 
 parser = yacc.yacc()
 root = parser.parse(test)
