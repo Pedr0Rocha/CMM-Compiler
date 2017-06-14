@@ -2,8 +2,25 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum
 import helpers
 
+# TODO
+# Make a generic sequence tree node - SeqTreeNode
+
 def semanticError(pos):
-	print "Semantic error at line " + pos['line'] + " and column " + pos['column'];
+	print "Semantic error at line " + str(pos['line']) + " and column " + str(pos['column']);
+
+def getCMMType(varType):
+    if (varType == 'int'):
+    	return CMMTypes.INT;
+    if (varType == 'string'):
+    	return CMMTypes.STRING;
+    if (varType == 'bool'):
+    	return CMMTypes.BOOL;
+    if (varType == 'array_int'):
+    	return CMMTypes.ARRAY_INT;
+    if (varType == 'array_string'):
+    	return CMMTypes.ARRAY_STRING;
+    if (varType == 'array_bool'):
+    	return CMMTypes.ARRAY_BOOL;
 
 class CMMTypes(Enum):
 	INT 			= 0;
@@ -26,33 +43,62 @@ class TreeNode:
 	def evaluate(self): pass;
 
 	@abstractmethod
-	def prettyPrintNode(self): pass;
+	def printNode(self): pass;
 
 class ProgramTreeNode(TreeNode):
 
 	def evaluate(self):
-		return self.data['program'].evaluate();
+		self.data['program'].evaluate();
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "Program Start";
-		helpers.addNewScope();
-		print self.data['program'].prettyPrintNode();
-		helpers.removeScope();
+		self.data['program'].printNode();
 		print "Program End";
+
+class DecSeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['dec'].evaluate();
+		if (self.data.has_key('decSeq')):
+			self.data['decSeq'].evaluate();
+
+	def printNode(self):
+		print "Sequence of declarations";
+		self.data['dec'].printNode();
+		if (self.data.has_key('decSeq')):
+			self.data['decSeq'].printNode();
+
+class ExpSeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['exp'].evaluate();
+		if (self.data.has_key('expSeq')):
+			self.data['expSeq'].evaluate();
+
+	def printNode(self):
+		print "Sequence of declarations";
+		self.data['exp'].printNode();
+		if (self.data.has_key('expSeq')):
+			self.data['expSeq'].printNode();
 
 class DecFuncTreeNode(TreeNode):
 
 	def evaluate(self):
-		# check symbol table for function ID
-		# { name: funcName, type: funcType, paramsTypes: [int, int] }
-		# int a, int b
-		self.data['paramList'].evaluate();
-		self.data['block'].evaluate();
+		if (helpers.canCreateFuncOrProc(self.data['id'])):
+			self.data['paramList'].evaluate();
+			data = {
+				'name' 	 	 : self.data['id'],
+				'type' 	 	 : self.data['type'],
+				'paramTypes' : [],
+			}
+			helpers.addFunction(data);
 
-	def prettyPrintNode(self):
-		print self.data['id'] + " Function Declaration - Type: " + self.data['type'];
-		print self.data['paramList'].prettyPrintNode();
-		print self.data['block'].prettyPrintNode();
+			self.data['block'].evaluate();
+
+	def printNode(self):
+		self.data['id'] + " Function Declaration - Type: " + self.data['type'];
+		self.data['paramList'].printNode();
+		self.data['block'].printNode();
 
 class DecProcTreeNode(TreeNode):
 
@@ -61,10 +107,10 @@ class DecProcTreeNode(TreeNode):
 		self.data['paramList'].evaluate();
 		self.data['block'].evaluate();
 
-	def prettyPrintNode(self):
-		print self.data['id'] + " Procedure Declaration";
-		print self.data['paramList'].prettyPrintNode();
-		print self.data['block'].prettyPrintNode();
+	def printNode(self):
+		self.data['id'] + " Procedure Declaration";
+		self.data['paramList'].printNode();
+		self.data['block'].printNode();
 
 class VarDecTreeNode(TreeNode):
 
@@ -72,20 +118,37 @@ class VarDecTreeNode(TreeNode):
 		helpers.currentType = self.data['type'];
 		self.data['varSpecSeq'].evaluate();
 
-	def prettyPrintNode(self):
-		print self.data['varSpecSeq'].prettyPrintNode();
+	def printNode(self):
+		self.data['varSpecSeq'].printNode();
 
 class VarDecListTreeNode(TreeNode):
 
 	def evaluate(self):
-		self.data['varDec'].evaluate();
-		self.data['varDecList'].evaluate();
+		if (self.data.has_key('varDec')):
+			print self.data['varDec'];
+			if (self.data['varDec'] != 'empty'):
+				self.data['varDec'].evaluate();
 
-	def prettyPrintNode(self):
+		if (self.data.has_key('varDecList')):
+			self.data['varDecList'].evaluate();
+
+	def printNode(self):
 		print "Variable Declaration List"
-		print self.data['varDec'].prettyPrintNode();
-		print self.data['varDecList'].prettyPrintNode();
+		self.data['varDec'].printNode();
+		self.data['varDecList'].printNode();
 
+class LiteralSeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['lit'].evaluate();
+		if (self.data.has_key('litSeq')):
+			self.data['litSeq'].evaluate();
+
+	def printNode(self):
+		self.data['lit'].printNode();
+		if (self.data.has_key('litSeq')):
+			self.data['litSeq'].printNode();
+		
 class VarSeqTreeNode(TreeNode):
 
 	def evaluate(self):
@@ -93,10 +156,37 @@ class VarSeqTreeNode(TreeNode):
 		if (self.data.has_key('varSeq')):
 			self.data['varSeq'].evaluate();
 
-	def prettyPrintNode(self):
-		print self.data['var'].prettyPrintNode();
+	def printNode(self):
+		self.data['var'].printNode();
 		if (self.data.has_key('varSeq')):
-			self.data['varSeq'].prettyPrintNode();
+			self.data['varSeq'].printNode();
+
+class ParamSeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		# param is vector[id, type]
+		# TODO check same name params
+		param = self.data['param'].evaluate();
+		helpers.currentParams.append(param);
+		if (self.data.has_key('paramSeq')):
+			self.data['paramSeq'].evaluate();
+
+	def printNode(self):
+		self.data['param'].printNode();
+		if (self.data.has_key('paramSeq')):
+			self.data['paramSeq'].printNode();
+
+class SeqTreeNode(TreeNode):
+
+	def evaluate(self):
+		self.data['base'].evaluate();
+		if (self.data.has_key('seq')):
+			self.data['seq'].evaluate();
+
+	def printNode(self):
+		self.data['base'].printNode();
+		if (self.data.has_key('seq')):
+			self.data['seq'].printNode();
 
 class VarTreeNode(TreeNode):
 
@@ -106,38 +196,43 @@ class VarTreeNode(TreeNode):
 
 			if (self.data.has_key('literal')):
 				literalEval = self.data['literal'].evaluate();
-				if (helpers.getCMMType(helpers.currentType) != literalEval):
+				if (getCMMType(helpers.currentType) != literalEval):
 					semanticError(self.data['pos']);
-					print "Wrong type assigned to variable. Expecting " + helpers.currentType;
+					print "Wrong type assigned to variable '" + self.data['id'] + "'. Expecting " + helpers.currentType + ", found " + str(literalEval) + ".";
 					addVar = False;
 
 			if (self.data.has_key('size')):
 				if (self.data.has_key('literalSeq')):
 					literalSeqEval = self.data['literalSeq'].evaluate();
-					if (helpers.getCMMType("array_" + helpers.currentType) != literalSeqEval):
+					if (getCMMType("array_" + helpers.currentType) != literalSeqEval):
 						semanticError(self.data['pos']);
-						print "Wrong type assigned to vector. Expecting array of " + helpers.currentType;
+						print "Wrong type assigned to vector. Expecting array of " + helpers.currentType + ".";
 						addVar = False;
 
 			if (addVar):
 				helpers.addOrUpdateSymbol(self.data['id'], helpers.currentType);
 		else:
 			semanticError(self.data['pos']);
-			print "Variable already defined on a previous scope";
+			print "Variable '" + self.data['id'] + "' already defined on the same scope";
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print self.data['id'] + " variable declaration";
 
 class ParamTreeNode(TreeNode):
 
 	def evaluate(self):
-		# check symbol table for procedure ID
+		paramType = self.data['type'];
 		if (self.data['isVector']):
-			pass;
+			if (paramType == 'int'):
+				return [self.data['id'], "array_int"];
+			elif (paramType == 'str'):
+				return [self.data['id'], "array_str"];
+			elif (paramType == 'bool'):
+				return [self.data['id'], "array_bool"];
 		else:
-			pass;	
+			return [self.data['id'], paramType];	
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print self.data['id'] + " Parameter - Type: " + self.data['type'] + " isVector: " + self.data['isVector'];
 
 class BlockTreeNode(TreeNode):
@@ -148,17 +243,17 @@ class BlockTreeNode(TreeNode):
 		self.data['stmtList'].evaluate();
 		helpers.removeScope();
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "Block"
-		print self.data['varDecList'].prettyPrintNode();
-		print self.data['stmtList'].prettyPrintNode();
+		self.data['varDecList'].printNode();
+		self.data['stmtList'].printNode();
 
 class NumTreeNode(TreeNode):
 
 	def evaluate(self):
 		return CMMTypes.INT;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class StrTreeNode(TreeNode):
@@ -166,7 +261,7 @@ class StrTreeNode(TreeNode):
 	def evaluate(self):
 		return CMMTypes.STRING;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class LogicTreeNode(TreeNode):
@@ -174,7 +269,7 @@ class LogicTreeNode(TreeNode):
 	def evaluate(self):
 		return CMMTypes.BOOL;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class ExpressionTreeNode(TreeNode):
@@ -185,7 +280,7 @@ class ExpressionTreeNode(TreeNode):
 		elif (self.data['op'] == 'ternaryif'):
 			pass;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class BinopTreeNode(TreeNode):
@@ -209,7 +304,7 @@ class BinopTreeNode(TreeNode):
 			semanticError(self.data['pos']);
 			print "Left and right hand operators of binary op don't match";
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class IfTreeNode(TreeNode):
@@ -223,10 +318,10 @@ class IfTreeNode(TreeNode):
 
 		self.data['block'].evaluate();
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "If statement begin";
-		print self.data['exp'].prettyPrintNode();
-		print self.data['block'].prettyPrintNode();
+		self.data['exp'].printNode();
+		self.data['block'].printNode();
 		print "If statement end";
 
 class IfElseTreeNode(TreeNode):
@@ -241,11 +336,11 @@ class IfElseTreeNode(TreeNode):
 		self.data['block'].evaluate();
 		self.data['blockElse'].evaluate();
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "Ifelse statement begin";
-		print self.data['exp'].prettyPrintNode();
-		print self.data['block'].prettyPrintNode();
-		print self.data['blockElse'].prettyPrintNode();
+		self.data['exp'].printNode();
+		self.data['block'].printNode();
+		self.data['blockElse'].printNode();
 		print "Ifelse statement end";
 
 class WhileTreeNode(TreeNode):
@@ -261,9 +356,9 @@ class WhileTreeNode(TreeNode):
 		self.data['block'].evaluate();
 		helpers.insideLoops -= 1;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "While statement begin";
-		print self.data['block'].prettyPrintNode();
+		self.data['block'].printNode();
 		print "While statement end";
 
 class ForTreeNode(TreeNode):
@@ -282,12 +377,12 @@ class ForTreeNode(TreeNode):
 		self.data['block'].evaluate();
 		helpers.insideLoops -= 1;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		print "For statement begin";
-		print self.data['assignInit'].prettyPrintNode();
-		print self.data['exp'].prettyPrintNode();
-		print self.data['assignEnd'].prettyPrintNode();
-		print self.data['block'].prettyPrintNode();
+		self.data['assignInit'].printNode();
+		self.data['exp'].printNode();
+		self.data['assignEnd'].printNode();
+		self.data['block'].printNode();
 		print "For statement end";
 
 class ReadTreeNode(TreeNode):
@@ -295,16 +390,16 @@ class ReadTreeNode(TreeNode):
 	def evaluate(self):
 		self.data['var'].evaluate();
 
-	def prettyPrintNode(self):
-		print "Reading: " + self.data['var'].prettyPrintNode();
+	def printNode(self):
+		print "Reading: " + self.data['var'].printNode();
 
 class WriteTreeNode(TreeNode):
 
 	def evaluate(self):
 		self.data['expList'].evaluate();
 
-	def prettyPrintNode(self):
-		print "Writing: " + self.data['var'].prettyPrintNode();
+	def printNode(self):
+		print "Writing: " + self.data['var'].printNode();
 
 class AssignTreeNode(TreeNode):
 	# varEval wont work here
@@ -323,7 +418,7 @@ class AssignTreeNode(TreeNode):
 			pass;
 			# check variable in symbol table, expEval must be equal to var type
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;	
 
 class IDTreeNode(TreeNode):
@@ -337,7 +432,7 @@ class IDTreeNode(TreeNode):
 		else:
 			return idType;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class IDVectorTreeNode(TreeNode):
@@ -360,7 +455,7 @@ class IDVectorTreeNode(TreeNode):
 			else:
 				return CMMTypes.INT;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
 
 class SubCallTreeNode(TreeNode):
@@ -368,19 +463,6 @@ class SubCallTreeNode(TreeNode):
 	def evaluate(self):
 		pass;
 
-	def prettyPrintNode(self):
+	def printNode(self):
 		pass;
-
-class DecSeqTreeNode(TreeNode):
-
-	def evaluate(self):
-		self.data['dec'].evaluate();
-		if (self.data.has_key('decSeq')):
-			self.data['decSeq'].evaluate();
-
-
-	def prettyPrintNode(self):
-		print "Sequence of declarations";
-		print self.data['dec'].prettyPrintNode();
-
 

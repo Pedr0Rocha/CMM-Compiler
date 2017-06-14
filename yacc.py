@@ -1,4 +1,5 @@
 import ply.yacc as yacc
+from test import test
 import lex
 import ast 
 import helpers
@@ -67,14 +68,14 @@ def p_varSpec(p):
         #p[0] = p[1];
         p[0] = ast.VarTreeNode({
                 'id'  : p[1],
-                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
+                'pos' : { 'line' : p.lineno(1), 'column' : p.lexpos(1) },
             });
     elif len(p) == 4:
         #p[0] = ('varSpec', [p[1], p[3]]);
         p[0] = ast.VarTreeNode({
                 'id'      : p[1],
                 'literal' : p[3],
-                'pos'     : { 'line' : p.lineno, 'column' : p.lexpos },
+                'pos'     : { 'line' : p.lineno(1), 'column' : p.lexpos(1) },
             });
     elif len(p) == 5:
         #p[0] = ('varSpecArray', [p[1], p[3]]);
@@ -98,9 +99,9 @@ def p_varSpecSeq(p):
         #p[0] = ('varSpecSeq', [p[1], p[3]]);
     if len(p) == 4:
         p[0] = ast.VarSeqTreeNode({
-            'var'    : p[1],
-            'varSeq' : p[3],
-        });
+                'var'    : p[1],
+                'varSeq' : p[3],
+            });
     else:
         p[0] = ast.VarSeqTreeNode({
                 'var'    : p[1],
@@ -109,10 +110,17 @@ def p_varSpecSeq(p):
 def p_literalSeq(p):
     '''literalSeq : literal COMMA literalSeq
                   | literal'''
-    if len(p) == 3:
-        p[0] = ('literalSeq', [p[1], p[3]]);
+    if len(p) == 4:
+        #p[0] = ('literalSeq', [p[1], p[3]]);
+        p[0] = ast.LiteralSeqTreeNode({
+                'lit'    : p[1],
+                'litSeq' : p[3],
+            });
     else:
-        p[0] = p[1];
+        #p[0] = p[1];
+        p[0] = ast.LiteralSeqTreeNode({
+                'lit' : p[1],
+            });
 
 def p_paramList(p):
     '''paramList : paramSeq
@@ -332,17 +340,28 @@ def p_expSeq(p):
     '''expSeq : exp COMMA expSeq
               | exp'''
     if len(p) == 4:
-        p[0] = ('expSeq', [p[1], p[3]]);
+        #p[0] = ('expSeq', [p[1], p[3]]);
+        p[0] = ast.ExpSeqTreeNode({
+                'exp' : p[1],
+            });
     else:
-        p[0] = p[1];
+        #p[0] = p[1];
+        p[0] = ast.ExpSeqTreeNode({
+                'exp'    : p[1],
+                'expSeq' : p[3],
+            });
 
 def p_stmtList(p):
     '''stmtList : stmt stmtList
                 | empty'''
     if len(p) == 3:
-        p[0] = ('stmtList', [p[1], p[2]]);
+        #p[0] = ('stmtList', [p[1], p[2]]);
+        p[0] = ast.StmtListTreeNode({
+                'stmt'     : p[1],
+                'stmtList' : p[2],
+            });
     else:
-        p[0] = p[1];    
+        p[0] = p[1];
 
 def p_literal(p):
     '''literal : num
@@ -397,9 +416,16 @@ def p_paramSeq(p):
     '''paramSeq : param COMMA paramSeq
                 | param'''
     if len(p) == 4:
-        p[0] = ('paramSeq', [p[1], p[3]]);
+        #p[0] = ('paramSeq', [p[1], p[3]]);
+        p[0] = ast.ParamSeqTreeNode({
+                'param'    : p[1],
+                'paramSeq' : p[3],
+            });
     else: 
-        p[0] = p[1]; 
+        #p[0] = p[1]; 
+        p[0] = ast.ParamSeqTreeNode({
+                'param' : p[1],
+            });
 
 def p_empty(p):
     'empty :'
@@ -411,44 +437,8 @@ def p_error(p):
     else:
          print("Syntax error at EOF")
 
-test = '''
-    int v[10];
-    /*
-        Procedimento de ordenacao por troca
-        Observe como um parametro de arranjo e declarado
-    */
-    bubblesort(int v[], int n) {
-        int i=0, j;
-        bool trocou = true;
-        while (i < n-1 && trocou) {
-            trocou = false;
-            for (j=0; j < n-i-1; j+=1) {
-                if (v[j] > v[j+1]) {
-                    int aux;
-                    aux = v[j];
-                    v[j] = v[j+1];
-                    v[j+1] = aux;
-                    trocou = true;
-                }
-            }
-            i += 1;
-        }
-    }
-
-    main() {
-        int i;
-        for (i=0; i < 10; i+=1) {
-            read v[i];
-        }
-        bubblesort(v, 10);
-        for (i=0; i < 10; i+=1) {
-            write v[i], " ";
-        }
-    }
-'''
-
-test = 'int a; int a;'
 
 parser = yacc.yacc()
 root = parser.parse(test)
-root.prettyPrintNode();
+root.evaluate();
+root.printNode();

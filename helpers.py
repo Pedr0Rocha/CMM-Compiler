@@ -2,8 +2,8 @@
 	Side structures and helpers to the semantic analyser.
 '''
 # TODO 
-# tirar symbol e fazer lista de tipos apenas
-#
+# Remove symbols and make a list of types (no use for the symbol names)
+# Better way to import CMMTypes from ast (welcome to dependency hell)
 
 insideLoops = 0;
 
@@ -15,6 +15,8 @@ currentFunc = None;
 
 currentType = None;
 currentScope = 0;
+
+currentParams = [];
 
 def getCurrentFuncType():
 	pass;
@@ -29,29 +31,58 @@ def addOrUpdateSymbol(symbol, sType):
 			'type' : sType 
 		});
 	else:
-		symbols[symbol] = [currentScope, {
+		symbols[symbol] = [getScopeDelimiter(currentScope), {
 			'symbol' : symbol, 
 			'type' : sType 
 		}];
-	print symbols;
+
+def addParam(symbol, sType):
+	if (symbols.has_key(symbol)):
+		symbolTable = symbols[symbol];
+		symbolTable.append(getScopeDelimiter(currentScope + 1));
+		symbolTable.append({
+			'symbol' : symbol, 
+			'type' : sType 
+		});
+	else:
+		symbols[symbol] = [getScopeDelimiter(currentScope + 1), {
+			'symbol' : symbol, 
+			'type' : sType 
+		}];
 
 def addNewScope():
-	scopeDelimiter = "scope-" + str(currentScope + 1);
 	for key in symbols:
-		symbols[key].append(scopeDelimiter);
+		if (symbols[key] is list):
+			symbols[key].append(getScopeDelimiter(currentScope + 1));
 
 def removeScope():
-	scopeDelimiter = "scope-" + str(currentScope - 1);
 	for key in symbols:
-		if (len(symbols[key]) > 0):
-			while (symbols[key].pop() != scopeDelimiter):
-				if (len(symbols[key]) == 0):
-					break;
-			pass;
+		if (symbols[key] is list):
+			if (len(symbols[key]) > 0):
+				while (symbols[key].pop() != getScopeDelimiter(currentScope - 1)):
+					if (len(symbols[key]) == 0):
+						break;
+				pass;
+
+def getScopeDelimiter(scope):
+	return "scope-" + str(scope);
+
+def canCreateFuncOrProc(funcOrProc):
+	return (not symbols.has_key(funcOrProc));
+
+def addFunction(func):
+	global currentParams;
 	
-def addFunctionOrProc(method):
-	if (not symbols.has_key(method['name'])):
-		symbols[method['name']] = [method];
+	for param in currentParams:
+		func['paramTypes'].append(param[1]);
+		addParam(param[0], param[1]);
+
+	symbols[func['name']] = func;
+	currentParams = [];
+
+def addProcedure(proc):
+	if (not symbols.has_key(proc['name'])):
+		symbols[proc['name']] = [proc];
 
 def getVariableType(var):
 	if (symbols.has_key(var)):
@@ -61,26 +92,14 @@ def getVariableType(var):
 	else:
 		return False;
 
-def getCMMType(varType):
-    if (varType == 'int'):
-    	return CMMTypes.INT;
-    if (varType == 'string'):
-    	return CMMTypes.STRING;
-    if (varType == 'bool'):
-    	return CMMTypes.BOOL;
-    if (varType == 'array_int'):
-    	return CMMTypes.ARRAY_INT;
-    if (varType == 'array_string'):
-    	return CMMTypes.ARRAY_STRING;
-    if (varType == 'array_bool'):
-    	return CMMTypes.ARRAY_BOOL;
-
 def canCreateVar(var):
+	if (not symbols.has_key(var)):
+		return True;
 	if (len(symbols[var]) == 0):
 		return True;
-	return symbols[var][len(symbols[var]) - 1] != currentScope;
+	return symbols[var][len(symbols[var]) - 1] == currentScope;
 
-def prettyPrintSymbols():
+def printSymbols():
 	for key in symbols:
 		print "Key: " + str(key);
 		print "List: " + str(symbols[key]);
