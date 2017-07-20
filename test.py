@@ -1,13 +1,31 @@
 
 test = '''
-	int a;
+    int a[10];
 
-	int func(string a, int b, bool c) {
-		int k;
-	}
+    bubblesort(int v) {
+        bool a = true;    
+    }
+
+'''
+
+test3 = '''
+    int a, b, c = 2;
+
+    int func(int k) {
+        k = 1;
+        return k;
+    }
 '''
 
 test2 = '''
+    int a;
+
+    int func(string a, int b, bool c) {
+        int k;
+    }
+'''
+
+test1 = '''
     int v[10];
     /*
         Procedimento de ordenacao por troca

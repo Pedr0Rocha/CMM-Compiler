@@ -22,6 +22,20 @@ def getCMMType(varType):
     if (varType == 'array_bool'):
     	return CMMTypes.ARRAY_BOOL;
 
+def getCMMTypeName(num):
+	if (num == 0):
+		return "INT";
+	elif (num == 1):
+		return "STRING";
+	elif (num == 2):
+		return "BOOL";
+	elif (num == 3):
+		return "ARRAY_INT";
+	elif (num == 4):
+		return "ARRAY_STRING";
+	elif (num == 5):
+		return "ARRAY_BOOL";
+
 class CMMTypes(Enum):
 	INT 			= 0;
 	STRING 			= 1;
@@ -92,8 +106,11 @@ class DecFuncTreeNode(TreeNode):
 				'paramTypes' : [],
 			}
 			helpers.addFunction(data);
-
+			helpers.currentScope = helpers.currentScope + 1;
+			helpers.currentFunc = self.data['type'];
 			self.data['block'].evaluate();
+			helpers.currentScope = helpers.currentScope - 1;
+			helpers.currentFunc = None;
 
 	def printNode(self):
 		self.data['id'] + " Function Declaration - Type: " + self.data['type'];
@@ -103,12 +120,21 @@ class DecFuncTreeNode(TreeNode):
 class DecProcTreeNode(TreeNode):
 
 	def evaluate(self):
-		# check symbol table for procedure ID
-		self.data['paramList'].evaluate();
-		self.data['block'].evaluate();
+		if (helpers.canCreateFuncOrProc(self.data['id'])):
+			self.data['paramList'].evaluate();
+			data = {
+				'name'		 : self.data['id'],
+				'paramTypes' : [],
+			}
+			helpers.addProcedure(data);
+			helpers.currentScope = helpers.currentScope + 1;
+			helpers.currentProc = self.data['id'];
+			self.data['block'].evaluate();
+			helpers.currentScope = helpers.currentScope - 1;
+			helpers.currentProc = None;
 
 	def printNode(self):
-		self.data['id'] + " Procedure Declaration";
+		print self.data['id'] + " Procedure Declaration";
 		self.data['paramList'].printNode();
 		self.data['block'].printNode();
 
@@ -125,17 +151,33 @@ class VarDecListTreeNode(TreeNode):
 
 	def evaluate(self):
 		if (self.data.has_key('varDec')):
-			print self.data['varDec'];
-			if (self.data['varDec'] != 'empty'):
+			if (self.data['varDec'] != None):
 				self.data['varDec'].evaluate();
 
 		if (self.data.has_key('varDecList')):
-			self.data['varDecList'].evaluate();
+			if (self.data['varDecList'] != None):
+				self.data['varDecList'].evaluate();
 
 	def printNode(self):
-		print "Variable Declaration List"
+		print "Variable Declaration List";
 		self.data['varDec'].printNode();
 		self.data['varDecList'].printNode();
+
+class StmtListTreeNode(TreeNode):
+
+	def evaluate(self):
+		if (self.data.has_key('stmt')):
+			if (self.data['stmt'] != None):
+				self.data['stmt'].evaluate();
+
+		if (self.data.has_key('stmtList')):
+			if (self.data['stmtList'] != None):
+				self.data['stmtList'].evaluate();
+
+	def printNode(self):
+		print "Statements List";
+		self.data['stmt'].printNode();
+		self.data['stmtList'].printNode();
 
 class LiteralSeqTreeNode(TreeNode):
 
@@ -196,9 +238,10 @@ class VarTreeNode(TreeNode):
 
 			if (self.data.has_key('literal')):
 				literalEval = self.data['literal'].evaluate();
-				if (getCMMType(helpers.currentType) != literalEval):
+				currentTypeCMM = getCMMType(helpers.currentType);
+				if (currentTypeCMM != literalEval):
 					semanticError(self.data['pos']);
-					print "Wrong type assigned to variable '" + self.data['id'] + "'. Expecting " + helpers.currentType + ", found " + str(literalEval) + ".";
+					print "Wrong type assigned to variable '" + self.data['id'] + "'. Expecting " + getCMMTypeName(currentTypeCMM) + ", found " + getCMMTypeName(literalEval) + ".";
 					addVar = False;
 
 			if (self.data.has_key('size')):
@@ -233,14 +276,16 @@ class ParamTreeNode(TreeNode):
 			return [self.data['id'], paramType];	
 
 	def printNode(self):
-		print self.data['id'] + " Parameter - Type: " + self.data['type'] + " isVector: " + self.data['isVector'];
+		print self.data['id'] + " Parameter - Type: " + self.data['type'] + " isVector: " + str(self.data['isVector']);
 
 class BlockTreeNode(TreeNode):
 
 	def evaluate(self):
 		helpers.addNewScope();
-		self.data['varDecList'].evaluate();
-		self.data['stmtList'].evaluate();
+		if (self.data['varDecList'] != None):
+			self.data['varDecList'].evaluate();
+		if (self.data['stmtList'] != None):
+			self.data['stmtList'].evaluate();
 		helpers.removeScope();
 
 	def printNode(self):
@@ -402,7 +447,6 @@ class WriteTreeNode(TreeNode):
 		print "Writing: " + self.data['var'].printNode();
 
 class AssignTreeNode(TreeNode):
-	# varEval wont work here
 	def evaluate(self):
 		varEval = self.data['var'].evaluate();
 		expEval = self.data['exp'].evaluate();
@@ -415,8 +459,10 @@ class AssignTreeNode(TreeNode):
 				semanticError(self.data['pos']);
 				print "When using operator " + self.data['op'] + " left and right hand must be type INT."
 		else:
-			pass;
-			# check variable in symbol table, expEval must be equal to var type
+			if (getCMMType(varEval) != expEval):
+				semanticError(self.data['pos']);
+				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + getCMMTypeName(getCMMType(varEval)) + ", found " + getCMMTypeName(expEval) + ".";
+
 
 	def printNode(self):
 		pass;	
@@ -431,6 +477,9 @@ class IDTreeNode(TreeNode):
 			print "Variable " + self.data['id'] + " not declared.";
 		else:
 			return idType;
+
+	def getVarName(self):
+		return self.data['id'];
 
 	def printNode(self):
 		pass;
@@ -457,6 +506,32 @@ class IDVectorTreeNode(TreeNode):
 
 	def printNode(self):
 		pass;
+
+class ReturnTreeNode(TreeNode):
+
+	def evaluate(self):
+		if (helpers.currentFunc != None):
+			if (self.data.has_key('exp')):
+				expEval = self.data['exp'].evaluate();
+				if (expEval != None):
+					if (not isinstance(expEval, int)):
+						expEval = getCMMType(expEval);
+					if (getCMMType(helpers.currentFunc) != expEval):
+						semanticError(self.data['pos']);
+						print "Expecting return type of " + getCMMTypeName(getCMMType(helpers.currentFunc)) + ", found " + getCMMTypeName(expEval);
+					else:
+						return getCMMType(expEval);
+				else:
+					semanticError(self.data['pos']);
+					print "Returning a broken variable";
+
+		else:
+			semanticError(self.data['pos']);
+			print "You can't return outside a scope";
+
+	def printNode(self):
+		print "Return stmt";
+
 
 class SubCallTreeNode(TreeNode):
 

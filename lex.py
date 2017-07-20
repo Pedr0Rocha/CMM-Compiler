@@ -93,6 +93,8 @@ lexer.input(test)
 
 print("Test " + test)
 
+
+print "\n\nLexer Analysis\n\n";
 while True:
     tok = lexer.token()
     last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)

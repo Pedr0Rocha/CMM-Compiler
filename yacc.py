@@ -46,7 +46,7 @@ def p_decProc(p):
     p[0] = ast.DecProcTreeNode({
             'id'        : p[1],
             'paramList' : p[3],
-            'block'     : p[7],
+            'block'     : p[6],
             'pos'       : { 'line' : p.lineno, 'column' : p.lexpos },
         });
 
@@ -283,9 +283,14 @@ def p_returnStmt(p):
     '''returnStmt : RETURN SCOLON
                   | RETURN exp SCOLON'''
     if len(p) == 3:
-        p[0] = p[1];
+        p[0] = ast.ReturnTreeNode({
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
+            });
     else:
-        p[0] = ('return', p[2]);
+        p[0] = ast.ReturnTreeNode({
+                'exp' : p[2],
+                'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
+            });
 
 def p_returnStmt_error(p):
     '''returnStmt : RETURN error SCOLON'''
@@ -438,7 +443,10 @@ def p_error(p):
          print("Syntax error at EOF")
 
 
+print "\n\nSyntax Analysis\n\n";
 parser = yacc.yacc()
 root = parser.parse(test)
+
+print "\n\nSemantic Analysis\n\n;"
 root.evaluate();
-root.printNode();
+#root.printNode();

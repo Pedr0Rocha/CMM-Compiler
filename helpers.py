@@ -18,9 +18,6 @@ currentScope = 0;
 
 currentParams = [];
 
-def getCurrentFuncType():
-	pass;
-
 symbols = {};
 
 def addOrUpdateSymbol(symbol, sType):
@@ -81,14 +78,20 @@ def addFunction(func):
 	currentParams = [];
 
 def addProcedure(proc):
-	if (not symbols.has_key(proc['name'])):
-		symbols[proc['name']] = [proc];
+	global currentParams;
+	
+	for param in currentParams:
+		proc['paramTypes'].append(param[1]);
+		addParam(param[0], param[1]);
+
+	symbols[proc['name']] = proc;
+	currentParams = [];
 
 def getVariableType(var):
 	if (symbols.has_key(var)):
 		symbolList = symbols[var][:];
 		symbolList.reverse();
-		return element['type'];
+		return symbolList[0]['type'];
 	else:
 		return False;
 
@@ -97,7 +100,11 @@ def canCreateVar(var):
 		return True;
 	if (len(symbols[var]) == 0):
 		return True;
-	return symbols[var][len(symbols[var]) - 1] == currentScope;
+
+	# CONTINUE FROM HERE
+	# VARIABLES CREATED INSIDE A SCOPE NOT WORKING
+	#return symbols[var][len(symbols[var]) - 1] == currentScope;
+	return True;
 
 def printSymbols():
 	for key in symbols:
