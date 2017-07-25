@@ -575,6 +575,18 @@ class ReturnTreeNode(TreeNode):
 	def printNode(self):
 		print "Return stmt";
 
+class BreakTreeNode(TreeNode):
+
+	def evaluate(self):
+		if (helpers.canBreak()):
+			return;
+		else:
+			semanticError(self.data['pos']);
+			print "You can't use 'break' outside a loop.\n";
+
+	def printNode(self):
+		print "Break stmt";
+
 
 class SubCallTreeNode(TreeNode):
 

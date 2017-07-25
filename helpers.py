@@ -3,11 +3,10 @@
 '''
 # TODO 
 # Remove symbols and make a list of types (no use for the symbol names)
-# Better way to import CMMTypes from ast (welcome to dependency hell)
 
 insideLoops = 0;
 
-def canBreakOrReturn():
+def canBreak():
 	return insideLoops != 0;
 
 currentProc = None;
@@ -101,7 +100,7 @@ def canCreateVar(var):
 	if (len(symbols[var]) == 0):
 		return True;
 
-	# CONTINUE FROM HERE
+	# TODO
 	# VARIABLES CREATED INSIDE A SCOPE NOT WORKING
 	#return symbols[var][len(symbols[var]) - 1] == currentScope;
 	return True;

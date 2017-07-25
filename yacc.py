@@ -277,7 +277,9 @@ def p_forStmt(p):
 
 def p_breakStmt(p):
     'breakStmt : BREAK SCOLON'
-    p[0] = p[1];
+    p[0] = ast.BreakTreeNode({
+            'pos' : { 'line' : p.lineno, 'column' : p.lexpos },
+        });
 
 def p_returnStmt(p):
     '''returnStmt : RETURN SCOLON
