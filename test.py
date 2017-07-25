@@ -1,9 +1,13 @@
 
-test = '''
-    int a[10];
+test1 = '''
+    bool a = true;
+    int n = 10;
+    int i = 1;
 
-    bubblesort(int v) {
-        bool a = true;    
+    teste() {
+        while ((i < (n-1)) && true) {
+            int aux;
+        }
     }
 
 '''
@@ -25,7 +29,7 @@ test2 = '''
     }
 '''
 
-test1 = '''
+test = '''
     int v[10];
     /*
         Procedimento de ordenacao por troca
@@ -34,9 +38,9 @@ test1 = '''
     bubblesort(int v[], int n) {
         int i=0, j;
         bool trocou = true;
-        while (i < n-1 && trocou) {
+        while ((i < (n-1)) && trocou) {
             trocou = false;
-            for (j=0; j < n-i-1; j+=1) {
+            for (j=0; (j < ((n-i)-1)); j+=1) {
                 if (v[j] > v[j+1]) {
                     int aux;
                     aux = v[j];

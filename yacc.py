@@ -345,15 +345,15 @@ def p_expSeq(p):
     '''expSeq : exp COMMA expSeq
               | exp'''
     if len(p) == 4:
-        #p[0] = ('expSeq', [p[1], p[3]]);
-        p[0] = ast.ExpSeqTreeNode({
-                'exp' : p[1],
-            });
-    else:
-        #p[0] = p[1];
         p[0] = ast.ExpSeqTreeNode({
                 'exp'    : p[1],
                 'expSeq' : p[3],
+            });
+        #p[0] = ('expSeq', [p[1], p[3]]);
+    else:
+        #p[0] = p[1];
+        p[0] = ast.ExpSeqTreeNode({
+                'exp' : p[1],
             });
 
 def p_stmtList(p):
@@ -447,6 +447,6 @@ print "\n\nSyntax Analysis\n\n";
 parser = yacc.yacc()
 root = parser.parse(test)
 
-print "\n\nSemantic Analysis\n\n;"
+print "Semantic Analysis\n\n";
 root.evaluate();
 #root.printNode();

@@ -3,6 +3,9 @@ from enum import Enum
 import helpers
 
 # TODO
+# Check precedences, expressions not working without parenthesis
+# Implement BreakTreeNode to 'for' and 'while'
+# Implement SubCallNode
 # Make a generic sequence tree node - SeqTreeNode
 
 def semanticError(pos):
@@ -85,6 +88,7 @@ class DecSeqTreeNode(TreeNode):
 class ExpSeqTreeNode(TreeNode):
 
 	def evaluate(self):
+
 		self.data['exp'].evaluate();
 		if (self.data.has_key('expSeq')):
 			self.data['expSeq'].evaluate();
@@ -99,7 +103,8 @@ class DecFuncTreeNode(TreeNode):
 
 	def evaluate(self):
 		if (helpers.canCreateFuncOrProc(self.data['id'])):
-			self.data['paramList'].evaluate();
+			if (self.data['paramList'] != None):
+				self.data['paramList'].evaluate();
 			data = {
 				'name' 	 	 : self.data['id'],
 				'type' 	 	 : self.data['type'],
@@ -114,14 +119,16 @@ class DecFuncTreeNode(TreeNode):
 
 	def printNode(self):
 		self.data['id'] + " Function Declaration - Type: " + self.data['type'];
-		self.data['paramList'].printNode();
+		if (self.data['paramList'] != None):
+			self.data['paramList'].printNode();
 		self.data['block'].printNode();
 
 class DecProcTreeNode(TreeNode):
 
 	def evaluate(self):
 		if (helpers.canCreateFuncOrProc(self.data['id'])):
-			self.data['paramList'].evaluate();
+			if (self.data['paramList'] != None):
+				self.data['paramList'].evaluate();
 			data = {
 				'name'		 : self.data['id'],
 				'paramTypes' : [],
@@ -135,7 +142,8 @@ class DecProcTreeNode(TreeNode):
 
 	def printNode(self):
 		print self.data['id'] + " Procedure Declaration";
-		self.data['paramList'].printNode();
+		if (self.data['paramList'] != None):
+			self.data['paramList'].printNode();
 		self.data['block'].printNode();
 
 class VarDecTreeNode(TreeNode):
@@ -241,7 +249,7 @@ class VarTreeNode(TreeNode):
 				currentTypeCMM = getCMMType(helpers.currentType);
 				if (currentTypeCMM != literalEval):
 					semanticError(self.data['pos']);
-					print "Wrong type assigned to variable '" + self.data['id'] + "'. Expecting " + getCMMTypeName(currentTypeCMM) + ", found " + getCMMTypeName(literalEval) + ".";
+					print "Wrong type assigned to variable '" + self.data['id'] + "'. Expecting " + getCMMTypeName(currentTypeCMM) + ", found " + getCMMTypeName(literalEval) + ".\n";
 					addVar = False;
 
 			if (self.data.has_key('size')):
@@ -249,14 +257,14 @@ class VarTreeNode(TreeNode):
 					literalSeqEval = self.data['literalSeq'].evaluate();
 					if (getCMMType("array_" + helpers.currentType) != literalSeqEval):
 						semanticError(self.data['pos']);
-						print "Wrong type assigned to vector. Expecting array of " + helpers.currentType + ".";
+						print "Wrong type assigned to vector. Expecting array of " + helpers.currentType + ".\n";
 						addVar = False;
 
 			if (addVar):
 				helpers.addOrUpdateSymbol(self.data['id'], helpers.currentType);
 		else:
 			semanticError(self.data['pos']);
-			print "Variable '" + self.data['id'] + "' already defined on the same scope";
+			print "Variable '" + self.data['id'] + "' already defined on the same scope\n";
 
 	def printNode(self):
 		print self.data['id'] + " variable declaration";
@@ -336,6 +344,11 @@ class BinopTreeNode(TreeNode):
 
 		op = self.data['op'];
 
+		if (not isinstance(leftEval, int)):
+			leftEval = getCMMType(leftEval);
+		if (not isinstance(rightEval, int)):
+			rightEval = getCMMType(rightEval);
+
 		if (op == '+' or op == '-' or 
 			op == '*' or op == '/' or op == '%'):
 			if (leftEval == CMMTypes.INT and rightEval == CMMTypes.INT):
@@ -343,11 +356,16 @@ class BinopTreeNode(TreeNode):
 		elif (op == '&&' or op == '||'):
 			if (leftEval == CMMTypes.BOOL and rightEval == CMMTypes.BOOL):
 				return CMMTypes.BOOL;
+		elif (op == '<' or op == '>' or
+			  op == '<=' or op == '>=' or
+			  op == '==' or op == '!='):
+			if (leftEval == CMMTypes.INT and rightEval == CMMTypes.INT):
+				return CMMTypes.BOOL;
 		elif (leftEval == rightEval):
 				return leftEval;
 		else:
 			semanticError(self.data['pos']);
-			print "Left and right hand operators of binary op don't match";
+			print "Left and right hand operators of binary op don't match.\n";
 
 	def printNode(self):
 		pass;
@@ -357,9 +375,12 @@ class IfTreeNode(TreeNode):
 	def evaluate(self):
 		expEval = self.data['exp'].evaluate();
 
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
 		if (expEval != CMMTypes.BOOL):
 			semanticError(self.data['pos']);
-			print "Expression of if statement must be boolean, " + expEval + " found instead."
+			print "Expression of if statement must be boolean, " + getCMMTypeName(expEval) + " found instead.\n"
 
 		self.data['block'].evaluate();
 
@@ -374,9 +395,12 @@ class IfElseTreeNode(TreeNode):
 	def evaluate(self):
 		expEval = self.data['exp'].evaluate();
 
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
 		if (expEval != CMMTypes.BOOL):
 			semanticError(self.data['pos']);
-			print "Expression of ifelse statement must be boolean, " + expEval + " found instead."
+			print "Expression of ifelse statement must be boolean, " + getCMMTypeName(expEval) + " found instead.\n"
 
 		self.data['block'].evaluate();
 		self.data['blockElse'].evaluate();
@@ -393,9 +417,12 @@ class WhileTreeNode(TreeNode):
 	def evaluate(self):
 		expEval = self.data['exp'].evaluate();
 
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
 		if (expEval != CMMTypes.BOOL):
 			semanticError(self.data['pos']);
-			print "Expression of while statement must be boolean, " + expEval + " found instead."
+			print "Expression of while statement must be boolean, " + getCMMTypeName(expEval) + " found instead.\n"
 
 		helpers.insideLoops += 1;
 		self.data['block'].evaluate();
@@ -413,9 +440,12 @@ class ForTreeNode(TreeNode):
 		
 		self.data['assignInit'].evaluate();
 
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
 		if (expEval != CMMTypes.BOOL):
 			semanticError(self.data['pos']);
-			print "Expression of for statement must be a boolean, " + expEval + " found instead."
+			print "Expression of for statement must be a boolean, " + getCMMTypeName(expEval) + " found instead.\n"
 
 		self.data['assignEnd'].evaluate();
 		helpers.insideLoops += 1;
@@ -451,18 +481,22 @@ class AssignTreeNode(TreeNode):
 		varEval = self.data['var'].evaluate();
 		expEval = self.data['exp'].evaluate();
 
+		if (not isinstance(varEval, int)):
+			varEval = getCMMType(varEval);
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
 		if (self.data['op'] != '='):
 			if (varEval == CMMTypes.INT and
 				expEval == CMMTypes.INT):
 				return CMMTypes.INT;
 			else:
 				semanticError(self.data['pos']);
-				print "When using operator " + self.data['op'] + " left and right hand must be type INT."
+				print "When using operator '" + self.data['op'] + "' left and right hand must be type INT.\n"
 		else:
-			if (getCMMType(varEval) != expEval):
+			if (varEval != expEval):
 				semanticError(self.data['pos']);
-				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + getCMMTypeName(getCMMType(varEval)) + ", found " + getCMMTypeName(expEval) + ".";
-
+				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + getCMMTypeName(varEval) + ", found " + getCMMTypeName(expEval) + ".\n";
 
 	def printNode(self):
 		pass;	
@@ -474,7 +508,7 @@ class IDTreeNode(TreeNode):
 
 		if (idType == False):
 			semanticError(self.data['pos']);
-			print "Variable " + self.data['id'] + " not declared.";
+			print "Variable " + self.data['id'] + " not declared.\n";
 		else:
 			return idType;
 
@@ -490,12 +524,18 @@ class IDVectorTreeNode(TreeNode):
 		idType = helpers.getVariableType(self.data['id']);
 		expEval = self.data['exp'].evaluate();
 
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
+		if (not isinstance(idType, int)):
+			idType = getCMMType(idType);
+
 		if (idType == False):
 			semanticError(self.data['pos']);
-			print "Variable " + self.data['id'] + " not declared";
+			print "Variable " + self.data['id'] + " not declared.\n";
 		elif (expEval != CMMTypes.INT):
 			semanticError(self.data['pos']);
-			print "Invalid index of vector " + self.data['id'];
+			print "Invalid index of vector " + self.data['id'] + ".\n";
 		else:
 			if (idType == CMMTypes.ARRAY_BOOL):
 				return CMMTypes.BOOL;
@@ -503,6 +543,9 @@ class IDVectorTreeNode(TreeNode):
 				return CMMTypes.STRING;
 			else:
 				return CMMTypes.INT;
+
+	def getVarName(self):
+		return self.data['id'];
 
 	def printNode(self):
 		pass;
@@ -518,16 +561,16 @@ class ReturnTreeNode(TreeNode):
 						expEval = getCMMType(expEval);
 					if (getCMMType(helpers.currentFunc) != expEval):
 						semanticError(self.data['pos']);
-						print "Expecting return type of " + getCMMTypeName(getCMMType(helpers.currentFunc)) + ", found " + getCMMTypeName(expEval);
+						print "Expecting return type of " + getCMMTypeName(getCMMType(helpers.currentFunc)) + ", found " + getCMMTypeName(expEval) + ".\n";
 					else:
 						return getCMMType(expEval);
 				else:
 					semanticError(self.data['pos']);
-					print "Returning a broken variable";
+					print "Returning a broken variable.\n";
 
 		else:
 			semanticError(self.data['pos']);
-			print "You can't return outside a scope";
+			print "You can't return outside a scope.\n";
 
 	def printNode(self):
 		print "Return stmt";
