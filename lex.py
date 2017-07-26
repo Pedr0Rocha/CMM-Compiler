@@ -3,14 +3,11 @@ from test import test
 
 reserved = {
 	'if'		: 'IF',
-	'then'		: 'THEN',
 	'else'		: 'ELSE',
 	'for'		: 'FOR',
 	'while'		: 'WHILE',
 	'break'		: 'BREAK',
 	'return'	: 'RETURN',
-	'function'	: 'FUNCTION',
-	'void'		: 'VOID',
 	'int'		: 'INT',
 	'bool'		: 'BOOL',
 	'string'	: 'STRING',
@@ -79,7 +76,7 @@ def find_column(input,token):
 
 def t_error(t):
 	print("Illegal character '%s'" % t.value[0])
-	print("Line: " + repr(t.lineno) + " Column: " + repr(find_column(teste, t)) + '\n')
+	print("Line: " + repr(t.lineno) + " Column: " + repr(find_column(test, t)) + '\n')
 	t.lexer.skip(1)
 
 def t_ID(t):
@@ -94,7 +91,7 @@ lexer.input(test)
 print("Test " + test)
 
 
-print "\n\nLexer Analysis\n\n";
+print "\n\n====== Lexer Analysis ======\n\n";
 while True:
     tok = lexer.token()
     last_cr = lex.lexer.lexdata.rfind('\n', 0, lex.lexer.lexpos)

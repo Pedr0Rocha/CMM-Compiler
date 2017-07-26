@@ -9,7 +9,7 @@ import helpers
 # Make a generic sequence tree node - SeqTreeNode
 
 def semanticError(pos):
-	print "Semantic error at line " + str(pos['line']) + " and column " + str(pos['column']);
+	print "Semantic error at line " + str(pos['line']) + " and column " + str(pos['column']) + ".";
 
 def getCMMType(varType):
     if (varType == 'int'):
@@ -66,6 +66,8 @@ class ProgramTreeNode(TreeNode):
 
 	def evaluate(self):
 		self.data['program'].evaluate();
+		if (not helpers.symbols.has_key('main')):
+			print "Error - method main not found.\n";
 
 	def printNode(self):
 		print "Program Start";
@@ -93,6 +95,15 @@ class ExpSeqTreeNode(TreeNode):
 		if (self.data.has_key('expSeq')):
 			self.data['expSeq'].evaluate();
 
+	def evaluateToSubCall(self):
+		expEval = self.data['exp'].evaluate();
+		if (not isinstance(expEval, int)):
+			expEval = getCMMType(expEval);
+
+		helpers.currentSubCallParams.append(expEval);
+		if (self.data.has_key('expSeq')):
+			self.data['expSeq'].evaluateToSubCall();
+
 	def printNode(self):
 		print "Sequence of declarations";
 		self.data['exp'].printNode();
@@ -116,6 +127,9 @@ class DecFuncTreeNode(TreeNode):
 			self.data['block'].evaluate();
 			helpers.currentScope = helpers.currentScope - 1;
 			helpers.currentFunc = None;
+		else:
+			semanticError(self.data['pos']);
+			print "There is already a method using the same name.\n";
 
 	def printNode(self):
 		self.data['id'] + " Function Declaration - Type: " + self.data['type'];
@@ -139,6 +153,9 @@ class DecProcTreeNode(TreeNode):
 			self.data['block'].evaluate();
 			helpers.currentScope = helpers.currentScope - 1;
 			helpers.currentProc = None;
+		else:
+			semanticError(self.data['pos']);
+			print "There is already a method using the same name.\n";
 
 	def printNode(self):
 		print self.data['id'] + " Procedure Declaration";
@@ -329,8 +346,29 @@ class ExpressionTreeNode(TreeNode):
 
 	def evaluate(self):
 		if (self.data['op'] == 'not'):
-			pass;
+			expEval = self.data['exp'].evaluate();
+			if (not isinstance(expEval, int)):
+				expEval = getCMMType(expEval);
+
+			if (expEval == CMMTypes.BOOL):
+				return expEval;
+			else:
+				semanticError(self.data['pos']);
+				print "Not operand can't be used without a boolean expression.\n";
 		elif (self.data['op'] == 'ternaryif'):
+			expIfEval = self.data['expIf'].evaluate();
+			if (expIfEval == CMMTypes.BOOL):
+				expThen = self.data['expThen'].evaluate();
+				expElse = self.data['expElse'].evaluate();
+				if (expThen != expElse):
+					semanticError(self.data['pos']);
+					print "Ternary if expressions must be of the same type.\n";
+				else:
+					return expThen;
+			else:
+				semanticError(self.data['pos']);
+				print "Expression of Ternary If must be boolean.\n";
+
 			pass;
 
 	def printNode(self):
@@ -496,7 +534,7 @@ class AssignTreeNode(TreeNode):
 		else:
 			if (varEval != expEval):
 				semanticError(self.data['pos']);
-				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + getCMMTypeName(varEval) + ", found " + getCMMTypeName(expEval) + ".\n";
+				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + str(getCMMTypeName(varEval)) + ", found " + str(getCMMTypeName(expEval)) + ".\n";
 
 	def printNode(self):
 		pass;	
@@ -587,12 +625,35 @@ class BreakTreeNode(TreeNode):
 	def printNode(self):
 		print "Break stmt";
 
-
 class SubCallTreeNode(TreeNode):
 
 	def evaluate(self):
-		pass;
+		subCall = helpers.canCallSub(self.data['id']);
+		if (subCall != False):
+			if (self.data['expList'] != None):
+				self.data['expList'].evaluateToSubCall();
+				params = [];
+				for p in subCall['paramTypes']:
+					if (not isinstance(p, int)):
+						p = getCMMType(p);
+					params.append(p);
+				if (params != helpers.currentSubCallParams):
+					expecting = " Expecting";
+					for p in params:
+						expecting = expecting + " " + getCMMTypeName(p);
+
+					found = ". Found";
+					for p in helpers.currentSubCallParams:
+						found = found + " " + getCMMTypeName(p);
+
+					semanticError(self.data['pos']);
+					print "Parameters of sub-call don't match." + expecting + found;
+
+				helpers.currentSubCallParams = [];
+		else:
+			semanticError(self.data['pos']);
+			print "Call to non declared method.\n";
 
 	def printNode(self):
-		pass;
+		print "Sub Call";
 

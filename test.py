@@ -1,35 +1,37 @@
 
-test1 = '''
+test = '''
     bool a = true;
+    bool b = false;
     int n = 10;
-    int i = 1;
+    int i = true;
 
-    teste() {
-        while ((i < (n-1)) && true) {
-            int aux;
-        }
+    int teste() {
+        n = b;
+        return a;
+    }
+    int teste() {
+        n = b;
     }
 
 '''
 
-test3 = '''
+test1 = '''
     int a, b, c = 2;
 
+    break;
+
+    func() {
+        int a;
+        break;
+    }
     int func(int k) {
+        break;
         k = 1;
         return k;
     }
 '''
 
-test2 = '''
-    int a;
-
-    int func(string a, int b, bool c) {
-        int k;
-    }
-'''
-
-test = '''
+test1 = '''
     int v[10];
     /*
         Procedimento de ordenacao por troca
