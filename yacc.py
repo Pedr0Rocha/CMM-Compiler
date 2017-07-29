@@ -1,8 +1,12 @@
 import ply.yacc as yacc
-from test import test
 import lex
 import ast 
 import helpers
+import sys
+
+with open(sys.argv[1], 'r') as f:
+    contents = f.read()
+test = contents
 
 tokens = lex.tokens
 lex.lexer.lineno = 1;
@@ -419,4 +423,3 @@ root = parser.parse(test)
 
 print "\n\n====== Semantic Analysis ======\n\n";
 root.evaluate();
-#root.printNode();

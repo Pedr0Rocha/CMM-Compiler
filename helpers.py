@@ -1,8 +1,8 @@
 '''
 	Side structures and helpers to the semantic analyser.
 '''
-# TODO 
-# Remove symbols and make a list of types (no use for the symbol names)
+
+semanticErrors = 0;
 
 insideLoops = 0;
 
@@ -107,10 +107,6 @@ def canCreateVar(var):
 		return True;
 	if (len(symbols[var]) == 0):
 		return True;
-
-	# TODO
-	# VARIABLES CREATED INSIDE A SCOPE NOT WORKING
-	#return symbols[var][len(symbols[var]) - 1] == currentScope;
 	return True;
 
 def printSymbols():

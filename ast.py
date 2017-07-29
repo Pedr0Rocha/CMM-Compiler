@@ -2,14 +2,9 @@ from abc import ABCMeta, abstractmethod
 from enum import Enum
 import helpers
 
-# TODO
-# Check precedences, expressions not working without parenthesis
-# Implement BreakTreeNode to 'for' and 'while'
-# Implement SubCallNode
-# Make a generic sequence tree node - SeqTreeNode
-
 def semanticError(pos):
 	print "Semantic error at line " + str(pos['line']) + " and column " + str(pos['column']) + ".";
+	helpers.semanticErrors += 1;
 
 def getCMMType(varType):
     if (varType == 'int'):
@@ -68,6 +63,8 @@ class ProgramTreeNode(TreeNode):
 		self.data['program'].evaluate();
 		if (not helpers.symbols.has_key('main')):
 			print "Error - method main not found.\n";
+			helpers.semanticErrors += 1;
+		print str(helpers.semanticErrors) + " semantic errors."; 
 
 	def printNode(self):
 		print "Program Start";

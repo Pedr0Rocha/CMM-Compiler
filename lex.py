@@ -1,5 +1,9 @@
 import ply.lex as lex
-from test import test
+import sys
+
+with open(sys.argv[1], 'r') as f:
+    contents = f.read()
+test = contents
 
 reserved = {
 	'if'		: 'IF',
