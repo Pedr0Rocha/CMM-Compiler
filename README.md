@@ -9,3 +9,8 @@ Lexer, Parser and Semantic Analysis.
 ```
 $ python yacc.py testfile.txt
 ```
+
+##### 1.2 Depencencies 
+
+	- ply.lex
+	- enum (0.4.6)

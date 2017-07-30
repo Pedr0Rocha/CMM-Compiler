@@ -33,6 +33,8 @@ def getCMMTypeName(num):
 		return "ARRAY_STRING";
 	elif (num == 5):
 		return "ARRAY_BOOL";
+	else:
+		return "None";
 
 class CMMTypes(Enum):
 	INT 			= 0;
@@ -64,7 +66,7 @@ class ProgramTreeNode(TreeNode):
 		if (not helpers.symbols.has_key('main')):
 			print "Error - method main not found.\n";
 			helpers.semanticErrors += 1;
-		print str(helpers.semanticErrors) + " semantic errors."; 
+		print str(helpers.semanticErrors) + " semantic error(s)."; 
 
 	def printNode(self):
 		print "Program Start";
@@ -228,8 +230,6 @@ class VarSeqTreeNode(TreeNode):
 class ParamSeqTreeNode(TreeNode):
 
 	def evaluate(self):
-		# param is vector[id, type]
-		# TODO check same name params
 		param = self.data['param'].evaluate();
 		helpers.currentParams.append(param);
 		if (self.data.has_key('paramSeq')):
@@ -472,7 +472,6 @@ class ForTreeNode(TreeNode):
 
 	def evaluate(self):
 		expEval = self.data['exp'].evaluate();
-		
 		self.data['assignInit'].evaluate();
 
 		if (not isinstance(expEval, int)):
@@ -531,7 +530,7 @@ class AssignTreeNode(TreeNode):
 		else:
 			if (varEval != expEval):
 				semanticError(self.data['pos']);
-				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + str(getCMMTypeName(varEval)) + ", found " + str(getCMMTypeName(expEval)) + ".\n";
+				print "Wrong type assigned to variable '" + self.data['var'].getVarName() + "'. Expecting " + getCMMTypeName(varEval) + ", found " + getCMMTypeName(expEval) + ".\n";
 
 	def printNode(self):
 		pass;	
@@ -652,5 +651,5 @@ class SubCallTreeNode(TreeNode):
 			print "Call to non declared method.\n";
 
 	def printNode(self):
-		print "Sub Call";
+		print "Sub Call " + str(self.data['id']);
 

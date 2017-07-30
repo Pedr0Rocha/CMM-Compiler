@@ -3223,17 +3223,17 @@ state 128
     (43) binop -> exp . AND exp
     (44) binop -> exp . OR exp
 
-    PLUS            reduce using rule 26 (exp -> NOT exp .)
-    MINUS           reduce using rule 26 (exp -> NOT exp .)
-    MULT            reduce using rule 26 (exp -> NOT exp .)
-    DIV             reduce using rule 26 (exp -> NOT exp .)
-    MOD             reduce using rule 26 (exp -> NOT exp .)
     SCOLON          reduce using rule 26 (exp -> NOT exp .)
     COMMA           reduce using rule 26 (exp -> NOT exp .)
     RPAREN          reduce using rule 26 (exp -> NOT exp .)
     RBRAC           reduce using rule 26 (exp -> NOT exp .)
     COLON           reduce using rule 26 (exp -> NOT exp .)
     QMARK           shift and go to state 116
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
     EQUAL           shift and go to state 118
     DIFF            shift and go to state 123
     LESSEQ          shift and go to state 121
@@ -3244,6 +3244,11 @@ state 128
     OR              shift and go to state 120
 
   ! QMARK           [ reduce using rule 26 (exp -> NOT exp .) ]
+  ! PLUS            [ reduce using rule 26 (exp -> NOT exp .) ]
+  ! MINUS           [ reduce using rule 26 (exp -> NOT exp .) ]
+  ! MULT            [ reduce using rule 26 (exp -> NOT exp .) ]
+  ! DIV             [ reduce using rule 26 (exp -> NOT exp .) ]
+  ! MOD             [ reduce using rule 26 (exp -> NOT exp .) ]
   ! EQUAL           [ reduce using rule 26 (exp -> NOT exp .) ]
   ! DIFF            [ reduce using rule 26 (exp -> NOT exp .) ]
   ! LESSEQ          [ reduce using rule 26 (exp -> NOT exp .) ]
@@ -3252,11 +3257,6 @@ state 128
   ! LESS            [ reduce using rule 26 (exp -> NOT exp .) ]
   ! AND             [ reduce using rule 26 (exp -> NOT exp .) ]
   ! OR              [ reduce using rule 26 (exp -> NOT exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
 
 
 state 129
@@ -3757,39 +3757,39 @@ state 146
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 43 (binop -> exp AND exp .)
-    PLUS            reduce using rule 43 (binop -> exp AND exp .)
-    MINUS           reduce using rule 43 (binop -> exp AND exp .)
-    MULT            reduce using rule 43 (binop -> exp AND exp .)
-    DIV             reduce using rule 43 (binop -> exp AND exp .)
-    MOD             reduce using rule 43 (binop -> exp AND exp .)
-    EQUAL           reduce using rule 43 (binop -> exp AND exp .)
-    DIFF            reduce using rule 43 (binop -> exp AND exp .)
-    LESSEQ          reduce using rule 43 (binop -> exp AND exp .)
-    GREATEQ         reduce using rule 43 (binop -> exp AND exp .)
-    GREATER         reduce using rule 43 (binop -> exp AND exp .)
-    LESS            reduce using rule 43 (binop -> exp AND exp .)
     AND             reduce using rule 43 (binop -> exp AND exp .)
+    OR              reduce using rule 43 (binop -> exp AND exp .)
     SCOLON          reduce using rule 43 (binop -> exp AND exp .)
     RPAREN          reduce using rule 43 (binop -> exp AND exp .)
     RBRAC           reduce using rule 43 (binop -> exp AND exp .)
     COLON           reduce using rule 43 (binop -> exp AND exp .)
     QMARK           shift and go to state 116
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
+    EQUAL           shift and go to state 118
+    DIFF            shift and go to state 123
+    LESSEQ          shift and go to state 121
+    GREATEQ         shift and go to state 115
+    GREATER         shift and go to state 114
+    LESS            shift and go to state 117
 
   ! QMARK           [ reduce using rule 43 (binop -> exp AND exp .) ]
-  ! OR              [ reduce using rule 43 (binop -> exp AND exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
-  ! EQUAL           [ shift and go to state 118 ]
-  ! DIFF            [ shift and go to state 123 ]
-  ! LESSEQ          [ shift and go to state 121 ]
-  ! GREATEQ         [ shift and go to state 115 ]
-  ! GREATER         [ shift and go to state 114 ]
-  ! LESS            [ shift and go to state 117 ]
+  ! PLUS            [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! MINUS           [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! MULT            [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! DIV             [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! MOD             [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! EQUAL           [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! DIFF            [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! LESSEQ          [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! GREATEQ         [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! GREATER         [ reduce using rule 43 (binop -> exp AND exp .) ]
+  ! LESS            [ reduce using rule 43 (binop -> exp AND exp .) ]
   ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 147
@@ -3811,39 +3811,39 @@ state 147
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 41 (binop -> exp GREATER exp .)
-    PLUS            reduce using rule 41 (binop -> exp GREATER exp .)
-    MINUS           reduce using rule 41 (binop -> exp GREATER exp .)
-    MULT            reduce using rule 41 (binop -> exp GREATER exp .)
-    DIV             reduce using rule 41 (binop -> exp GREATER exp .)
-    MOD             reduce using rule 41 (binop -> exp GREATER exp .)
+    EQUAL           reduce using rule 41 (binop -> exp GREATER exp .)
+    DIFF            reduce using rule 41 (binop -> exp GREATER exp .)
     LESSEQ          reduce using rule 41 (binop -> exp GREATER exp .)
     GREATEQ         reduce using rule 41 (binop -> exp GREATER exp .)
     GREATER         reduce using rule 41 (binop -> exp GREATER exp .)
     LESS            reduce using rule 41 (binop -> exp GREATER exp .)
+    AND             reduce using rule 41 (binop -> exp GREATER exp .)
+    OR              reduce using rule 41 (binop -> exp GREATER exp .)
     SCOLON          reduce using rule 41 (binop -> exp GREATER exp .)
     RPAREN          reduce using rule 41 (binop -> exp GREATER exp .)
     RBRAC           reduce using rule 41 (binop -> exp GREATER exp .)
     COLON           reduce using rule 41 (binop -> exp GREATER exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 41 (binop -> exp GREATER exp .) ]
-  ! EQUAL           [ reduce using rule 41 (binop -> exp GREATER exp .) ]
-  ! DIFF            [ reduce using rule 41 (binop -> exp GREATER exp .) ]
-  ! AND             [ reduce using rule 41 (binop -> exp GREATER exp .) ]
-  ! OR              [ reduce using rule 41 (binop -> exp GREATER exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 41 (binop -> exp GREATER exp .) ]
+  ! MINUS           [ reduce using rule 41 (binop -> exp GREATER exp .) ]
+  ! MULT            [ reduce using rule 41 (binop -> exp GREATER exp .) ]
+  ! DIV             [ reduce using rule 41 (binop -> exp GREATER exp .) ]
+  ! MOD             [ reduce using rule 41 (binop -> exp GREATER exp .) ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 148
@@ -3865,39 +3865,39 @@ state 148
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 40 (binop -> exp GREATEQ exp .)
-    PLUS            reduce using rule 40 (binop -> exp GREATEQ exp .)
-    MINUS           reduce using rule 40 (binop -> exp GREATEQ exp .)
-    MULT            reduce using rule 40 (binop -> exp GREATEQ exp .)
-    DIV             reduce using rule 40 (binop -> exp GREATEQ exp .)
-    MOD             reduce using rule 40 (binop -> exp GREATEQ exp .)
+    EQUAL           reduce using rule 40 (binop -> exp GREATEQ exp .)
+    DIFF            reduce using rule 40 (binop -> exp GREATEQ exp .)
     LESSEQ          reduce using rule 40 (binop -> exp GREATEQ exp .)
     GREATEQ         reduce using rule 40 (binop -> exp GREATEQ exp .)
     GREATER         reduce using rule 40 (binop -> exp GREATEQ exp .)
     LESS            reduce using rule 40 (binop -> exp GREATEQ exp .)
+    AND             reduce using rule 40 (binop -> exp GREATEQ exp .)
+    OR              reduce using rule 40 (binop -> exp GREATEQ exp .)
     SCOLON          reduce using rule 40 (binop -> exp GREATEQ exp .)
     RPAREN          reduce using rule 40 (binop -> exp GREATEQ exp .)
     RBRAC           reduce using rule 40 (binop -> exp GREATEQ exp .)
     COLON           reduce using rule 40 (binop -> exp GREATEQ exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
-  ! EQUAL           [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
-  ! DIFF            [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
-  ! AND             [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
-  ! OR              [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
+  ! MINUS           [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
+  ! MULT            [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
+  ! DIV             [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
+  ! MOD             [ reduce using rule 40 (binop -> exp GREATEQ exp .) ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 149
@@ -3954,39 +3954,39 @@ state 150
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 42 (binop -> exp LESS exp .)
-    PLUS            reduce using rule 42 (binop -> exp LESS exp .)
-    MINUS           reduce using rule 42 (binop -> exp LESS exp .)
-    MULT            reduce using rule 42 (binop -> exp LESS exp .)
-    DIV             reduce using rule 42 (binop -> exp LESS exp .)
-    MOD             reduce using rule 42 (binop -> exp LESS exp .)
+    EQUAL           reduce using rule 42 (binop -> exp LESS exp .)
+    DIFF            reduce using rule 42 (binop -> exp LESS exp .)
     LESSEQ          reduce using rule 42 (binop -> exp LESS exp .)
     GREATEQ         reduce using rule 42 (binop -> exp LESS exp .)
     GREATER         reduce using rule 42 (binop -> exp LESS exp .)
     LESS            reduce using rule 42 (binop -> exp LESS exp .)
+    AND             reduce using rule 42 (binop -> exp LESS exp .)
+    OR              reduce using rule 42 (binop -> exp LESS exp .)
     SCOLON          reduce using rule 42 (binop -> exp LESS exp .)
     RPAREN          reduce using rule 42 (binop -> exp LESS exp .)
     RBRAC           reduce using rule 42 (binop -> exp LESS exp .)
     COLON           reduce using rule 42 (binop -> exp LESS exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 42 (binop -> exp LESS exp .) ]
-  ! EQUAL           [ reduce using rule 42 (binop -> exp LESS exp .) ]
-  ! DIFF            [ reduce using rule 42 (binop -> exp LESS exp .) ]
-  ! AND             [ reduce using rule 42 (binop -> exp LESS exp .) ]
-  ! OR              [ reduce using rule 42 (binop -> exp LESS exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 42 (binop -> exp LESS exp .) ]
+  ! MINUS           [ reduce using rule 42 (binop -> exp LESS exp .) ]
+  ! MULT            [ reduce using rule 42 (binop -> exp LESS exp .) ]
+  ! DIV             [ reduce using rule 42 (binop -> exp LESS exp .) ]
+  ! MOD             [ reduce using rule 42 (binop -> exp LESS exp .) ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 151
@@ -4008,39 +4008,39 @@ state 151
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 37 (binop -> exp EQUAL exp .)
-    PLUS            reduce using rule 37 (binop -> exp EQUAL exp .)
-    MINUS           reduce using rule 37 (binop -> exp EQUAL exp .)
-    MULT            reduce using rule 37 (binop -> exp EQUAL exp .)
-    DIV             reduce using rule 37 (binop -> exp EQUAL exp .)
-    MOD             reduce using rule 37 (binop -> exp EQUAL exp .)
     EQUAL           reduce using rule 37 (binop -> exp EQUAL exp .)
     DIFF            reduce using rule 37 (binop -> exp EQUAL exp .)
     LESSEQ          reduce using rule 37 (binop -> exp EQUAL exp .)
     GREATEQ         reduce using rule 37 (binop -> exp EQUAL exp .)
     GREATER         reduce using rule 37 (binop -> exp EQUAL exp .)
     LESS            reduce using rule 37 (binop -> exp EQUAL exp .)
+    AND             reduce using rule 37 (binop -> exp EQUAL exp .)
+    OR              reduce using rule 37 (binop -> exp EQUAL exp .)
     SCOLON          reduce using rule 37 (binop -> exp EQUAL exp .)
     RPAREN          reduce using rule 37 (binop -> exp EQUAL exp .)
     RBRAC           reduce using rule 37 (binop -> exp EQUAL exp .)
     COLON           reduce using rule 37 (binop -> exp EQUAL exp .)
     QMARK           shift and go to state 116
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
-  ! AND             [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
-  ! OR              [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
+  ! MINUS           [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
+  ! MULT            [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
+  ! DIV             [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
+  ! MOD             [ reduce using rule 37 (binop -> exp EQUAL exp .) ]
   ! EQUAL           [ shift and go to state 118 ]
   ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 152
@@ -4062,17 +4062,6 @@ state 152
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 44 (binop -> exp OR exp .)
-    PLUS            reduce using rule 44 (binop -> exp OR exp .)
-    MINUS           reduce using rule 44 (binop -> exp OR exp .)
-    MULT            reduce using rule 44 (binop -> exp OR exp .)
-    DIV             reduce using rule 44 (binop -> exp OR exp .)
-    MOD             reduce using rule 44 (binop -> exp OR exp .)
-    EQUAL           reduce using rule 44 (binop -> exp OR exp .)
-    DIFF            reduce using rule 44 (binop -> exp OR exp .)
-    LESSEQ          reduce using rule 44 (binop -> exp OR exp .)
-    GREATEQ         reduce using rule 44 (binop -> exp OR exp .)
-    GREATER         reduce using rule 44 (binop -> exp OR exp .)
-    LESS            reduce using rule 44 (binop -> exp OR exp .)
     AND             reduce using rule 44 (binop -> exp OR exp .)
     OR              reduce using rule 44 (binop -> exp OR exp .)
     SCOLON          reduce using rule 44 (binop -> exp OR exp .)
@@ -4080,19 +4069,30 @@ state 152
     RBRAC           reduce using rule 44 (binop -> exp OR exp .)
     COLON           reduce using rule 44 (binop -> exp OR exp .)
     QMARK           shift and go to state 116
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
+    EQUAL           shift and go to state 118
+    DIFF            shift and go to state 123
+    LESSEQ          shift and go to state 121
+    GREATEQ         shift and go to state 115
+    GREATER         shift and go to state 114
+    LESS            shift and go to state 117
 
   ! QMARK           [ reduce using rule 44 (binop -> exp OR exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
-  ! EQUAL           [ shift and go to state 118 ]
-  ! DIFF            [ shift and go to state 123 ]
-  ! LESSEQ          [ shift and go to state 121 ]
-  ! GREATEQ         [ shift and go to state 115 ]
-  ! GREATER         [ shift and go to state 114 ]
-  ! LESS            [ shift and go to state 117 ]
+  ! PLUS            [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! MINUS           [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! MULT            [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! DIV             [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! MOD             [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! EQUAL           [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! DIFF            [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! LESSEQ          [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! GREATEQ         [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! GREATER         [ reduce using rule 44 (binop -> exp OR exp .) ]
+  ! LESS            [ reduce using rule 44 (binop -> exp OR exp .) ]
   ! AND             [ shift and go to state 113 ]
   ! OR              [ shift and go to state 120 ]
 
@@ -4116,39 +4116,39 @@ state 153
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 39 (binop -> exp LESSEQ exp .)
-    PLUS            reduce using rule 39 (binop -> exp LESSEQ exp .)
-    MINUS           reduce using rule 39 (binop -> exp LESSEQ exp .)
-    MULT            reduce using rule 39 (binop -> exp LESSEQ exp .)
-    DIV             reduce using rule 39 (binop -> exp LESSEQ exp .)
-    MOD             reduce using rule 39 (binop -> exp LESSEQ exp .)
+    EQUAL           reduce using rule 39 (binop -> exp LESSEQ exp .)
+    DIFF            reduce using rule 39 (binop -> exp LESSEQ exp .)
     LESSEQ          reduce using rule 39 (binop -> exp LESSEQ exp .)
     GREATEQ         reduce using rule 39 (binop -> exp LESSEQ exp .)
     GREATER         reduce using rule 39 (binop -> exp LESSEQ exp .)
     LESS            reduce using rule 39 (binop -> exp LESSEQ exp .)
+    AND             reduce using rule 39 (binop -> exp LESSEQ exp .)
+    OR              reduce using rule 39 (binop -> exp LESSEQ exp .)
     SCOLON          reduce using rule 39 (binop -> exp LESSEQ exp .)
     RPAREN          reduce using rule 39 (binop -> exp LESSEQ exp .)
     RBRAC           reduce using rule 39 (binop -> exp LESSEQ exp .)
     COLON           reduce using rule 39 (binop -> exp LESSEQ exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
-  ! EQUAL           [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
-  ! DIFF            [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
-  ! AND             [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
-  ! OR              [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
+  ! MINUS           [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
+  ! MULT            [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
+  ! DIV             [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
+  ! MOD             [ reduce using rule 39 (binop -> exp LESSEQ exp .) ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 154
@@ -4172,37 +4172,37 @@ state 154
     COMMA           reduce using rule 32 (binop -> exp PLUS exp .)
     PLUS            reduce using rule 32 (binop -> exp PLUS exp .)
     MINUS           reduce using rule 32 (binop -> exp PLUS exp .)
-    MULT            reduce using rule 32 (binop -> exp PLUS exp .)
-    DIV             reduce using rule 32 (binop -> exp PLUS exp .)
-    MOD             reduce using rule 32 (binop -> exp PLUS exp .)
+    EQUAL           reduce using rule 32 (binop -> exp PLUS exp .)
+    DIFF            reduce using rule 32 (binop -> exp PLUS exp .)
+    LESSEQ          reduce using rule 32 (binop -> exp PLUS exp .)
+    GREATEQ         reduce using rule 32 (binop -> exp PLUS exp .)
+    GREATER         reduce using rule 32 (binop -> exp PLUS exp .)
+    LESS            reduce using rule 32 (binop -> exp PLUS exp .)
+    AND             reduce using rule 32 (binop -> exp PLUS exp .)
+    OR              reduce using rule 32 (binop -> exp PLUS exp .)
     SCOLON          reduce using rule 32 (binop -> exp PLUS exp .)
     RPAREN          reduce using rule 32 (binop -> exp PLUS exp .)
     RBRAC           reduce using rule 32 (binop -> exp PLUS exp .)
     COLON           reduce using rule 32 (binop -> exp PLUS exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    LESSEQ          shift and go to state 121
-    GREATEQ         shift and go to state 115
-    GREATER         shift and go to state 114
-    LESS            shift and go to state 117
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! EQUAL           [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! DIFF            [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! LESSEQ          [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! GREATEQ         [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! GREATER         [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! LESS            [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! AND             [ reduce using rule 32 (binop -> exp PLUS exp .) ]
-  ! OR              [ reduce using rule 32 (binop -> exp PLUS exp .) ]
+  ! MULT            [ reduce using rule 32 (binop -> exp PLUS exp .) ]
+  ! DIV             [ reduce using rule 32 (binop -> exp PLUS exp .) ]
+  ! MOD             [ reduce using rule 32 (binop -> exp PLUS exp .) ]
   ! PLUS            [ shift and go to state 122 ]
   ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
+  ! LESSEQ          [ shift and go to state 121 ]
+  ! GREATEQ         [ shift and go to state 115 ]
+  ! GREATER         [ shift and go to state 114 ]
+  ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 155
@@ -4224,39 +4224,39 @@ state 155
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 38 (binop -> exp DIFF exp .)
-    PLUS            reduce using rule 38 (binop -> exp DIFF exp .)
-    MINUS           reduce using rule 38 (binop -> exp DIFF exp .)
-    MULT            reduce using rule 38 (binop -> exp DIFF exp .)
-    DIV             reduce using rule 38 (binop -> exp DIFF exp .)
-    MOD             reduce using rule 38 (binop -> exp DIFF exp .)
     EQUAL           reduce using rule 38 (binop -> exp DIFF exp .)
     DIFF            reduce using rule 38 (binop -> exp DIFF exp .)
     LESSEQ          reduce using rule 38 (binop -> exp DIFF exp .)
     GREATEQ         reduce using rule 38 (binop -> exp DIFF exp .)
     GREATER         reduce using rule 38 (binop -> exp DIFF exp .)
     LESS            reduce using rule 38 (binop -> exp DIFF exp .)
+    AND             reduce using rule 38 (binop -> exp DIFF exp .)
+    OR              reduce using rule 38 (binop -> exp DIFF exp .)
     SCOLON          reduce using rule 38 (binop -> exp DIFF exp .)
     RPAREN          reduce using rule 38 (binop -> exp DIFF exp .)
     RBRAC           reduce using rule 38 (binop -> exp DIFF exp .)
     COLON           reduce using rule 38 (binop -> exp DIFF exp .)
     QMARK           shift and go to state 116
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    PLUS            shift and go to state 122
+    MINUS           shift and go to state 125
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 38 (binop -> exp DIFF exp .) ]
-  ! AND             [ reduce using rule 38 (binop -> exp DIFF exp .) ]
-  ! OR              [ reduce using rule 38 (binop -> exp DIFF exp .) ]
-  ! PLUS            [ shift and go to state 122 ]
-  ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! PLUS            [ reduce using rule 38 (binop -> exp DIFF exp .) ]
+  ! MINUS           [ reduce using rule 38 (binop -> exp DIFF exp .) ]
+  ! MULT            [ reduce using rule 38 (binop -> exp DIFF exp .) ]
+  ! DIV             [ reduce using rule 38 (binop -> exp DIFF exp .) ]
+  ! MOD             [ reduce using rule 38 (binop -> exp DIFF exp .) ]
   ! EQUAL           [ shift and go to state 118 ]
   ! DIFF            [ shift and go to state 123 ]
   ! LESSEQ          [ shift and go to state 121 ]
   ! GREATEQ         [ shift and go to state 115 ]
   ! GREATER         [ shift and go to state 114 ]
   ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 156
@@ -4278,39 +4278,39 @@ state 156
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 35 (binop -> exp DIV exp .)
+    PLUS            reduce using rule 35 (binop -> exp DIV exp .)
+    MINUS           reduce using rule 35 (binop -> exp DIV exp .)
     MULT            reduce using rule 35 (binop -> exp DIV exp .)
     DIV             reduce using rule 35 (binop -> exp DIV exp .)
     MOD             reduce using rule 35 (binop -> exp DIV exp .)
+    EQUAL           reduce using rule 35 (binop -> exp DIV exp .)
+    DIFF            reduce using rule 35 (binop -> exp DIV exp .)
+    LESSEQ          reduce using rule 35 (binop -> exp DIV exp .)
+    GREATEQ         reduce using rule 35 (binop -> exp DIV exp .)
+    GREATER         reduce using rule 35 (binop -> exp DIV exp .)
+    LESS            reduce using rule 35 (binop -> exp DIV exp .)
+    AND             reduce using rule 35 (binop -> exp DIV exp .)
+    OR              reduce using rule 35 (binop -> exp DIV exp .)
     SCOLON          reduce using rule 35 (binop -> exp DIV exp .)
     RPAREN          reduce using rule 35 (binop -> exp DIV exp .)
     RBRAC           reduce using rule 35 (binop -> exp DIV exp .)
     COLON           reduce using rule 35 (binop -> exp DIV exp .)
     QMARK           shift and go to state 116
-    PLUS            shift and go to state 122
-    MINUS           shift and go to state 125
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    LESSEQ          shift and go to state 121
-    GREATEQ         shift and go to state 115
-    GREATER         shift and go to state 114
-    LESS            shift and go to state 117
-    AND             shift and go to state 113
-    OR              shift and go to state 120
 
   ! QMARK           [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! PLUS            [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! MINUS           [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! EQUAL           [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! DIFF            [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! LESSEQ          [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! GREATEQ         [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! GREATER         [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! LESS            [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! AND             [ reduce using rule 35 (binop -> exp DIV exp .) ]
-  ! OR              [ reduce using rule 35 (binop -> exp DIV exp .) ]
+  ! PLUS            [ shift and go to state 122 ]
+  ! MINUS           [ shift and go to state 125 ]
   ! MULT            [ shift and go to state 126 ]
   ! DIV             [ shift and go to state 124 ]
   ! MOD             [ shift and go to state 127 ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
+  ! LESSEQ          [ shift and go to state 121 ]
+  ! GREATEQ         [ shift and go to state 115 ]
+  ! GREATER         [ shift and go to state 114 ]
+  ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 157
@@ -4334,37 +4334,37 @@ state 157
     COMMA           reduce using rule 33 (binop -> exp MINUS exp .)
     PLUS            reduce using rule 33 (binop -> exp MINUS exp .)
     MINUS           reduce using rule 33 (binop -> exp MINUS exp .)
-    MULT            reduce using rule 33 (binop -> exp MINUS exp .)
-    DIV             reduce using rule 33 (binop -> exp MINUS exp .)
-    MOD             reduce using rule 33 (binop -> exp MINUS exp .)
+    EQUAL           reduce using rule 33 (binop -> exp MINUS exp .)
+    DIFF            reduce using rule 33 (binop -> exp MINUS exp .)
+    LESSEQ          reduce using rule 33 (binop -> exp MINUS exp .)
+    GREATEQ         reduce using rule 33 (binop -> exp MINUS exp .)
+    GREATER         reduce using rule 33 (binop -> exp MINUS exp .)
+    LESS            reduce using rule 33 (binop -> exp MINUS exp .)
+    AND             reduce using rule 33 (binop -> exp MINUS exp .)
+    OR              reduce using rule 33 (binop -> exp MINUS exp .)
     SCOLON          reduce using rule 33 (binop -> exp MINUS exp .)
     RPAREN          reduce using rule 33 (binop -> exp MINUS exp .)
     RBRAC           reduce using rule 33 (binop -> exp MINUS exp .)
     COLON           reduce using rule 33 (binop -> exp MINUS exp .)
     QMARK           shift and go to state 116
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    LESSEQ          shift and go to state 121
-    GREATEQ         shift and go to state 115
-    GREATER         shift and go to state 114
-    LESS            shift and go to state 117
-    AND             shift and go to state 113
-    OR              shift and go to state 120
+    MULT            shift and go to state 126
+    DIV             shift and go to state 124
+    MOD             shift and go to state 127
 
   ! QMARK           [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! EQUAL           [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! DIFF            [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! LESSEQ          [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! GREATEQ         [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! GREATER         [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! LESS            [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! AND             [ reduce using rule 33 (binop -> exp MINUS exp .) ]
-  ! OR              [ reduce using rule 33 (binop -> exp MINUS exp .) ]
+  ! MULT            [ reduce using rule 33 (binop -> exp MINUS exp .) ]
+  ! DIV             [ reduce using rule 33 (binop -> exp MINUS exp .) ]
+  ! MOD             [ reduce using rule 33 (binop -> exp MINUS exp .) ]
   ! PLUS            [ shift and go to state 122 ]
   ! MINUS           [ shift and go to state 125 ]
-  ! MULT            [ shift and go to state 126 ]
-  ! DIV             [ shift and go to state 124 ]
-  ! MOD             [ shift and go to state 127 ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
+  ! LESSEQ          [ shift and go to state 121 ]
+  ! GREATEQ         [ shift and go to state 115 ]
+  ! GREATER         [ shift and go to state 114 ]
+  ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 158
@@ -4386,39 +4386,39 @@ state 158
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 34 (binop -> exp MULT exp .)
+    PLUS            reduce using rule 34 (binop -> exp MULT exp .)
+    MINUS           reduce using rule 34 (binop -> exp MULT exp .)
     MULT            reduce using rule 34 (binop -> exp MULT exp .)
     DIV             reduce using rule 34 (binop -> exp MULT exp .)
     MOD             reduce using rule 34 (binop -> exp MULT exp .)
+    EQUAL           reduce using rule 34 (binop -> exp MULT exp .)
+    DIFF            reduce using rule 34 (binop -> exp MULT exp .)
+    LESSEQ          reduce using rule 34 (binop -> exp MULT exp .)
+    GREATEQ         reduce using rule 34 (binop -> exp MULT exp .)
+    GREATER         reduce using rule 34 (binop -> exp MULT exp .)
+    LESS            reduce using rule 34 (binop -> exp MULT exp .)
+    AND             reduce using rule 34 (binop -> exp MULT exp .)
+    OR              reduce using rule 34 (binop -> exp MULT exp .)
     SCOLON          reduce using rule 34 (binop -> exp MULT exp .)
     RPAREN          reduce using rule 34 (binop -> exp MULT exp .)
     RBRAC           reduce using rule 34 (binop -> exp MULT exp .)
     COLON           reduce using rule 34 (binop -> exp MULT exp .)
     QMARK           shift and go to state 116
-    PLUS            shift and go to state 122
-    MINUS           shift and go to state 125
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    LESSEQ          shift and go to state 121
-    GREATEQ         shift and go to state 115
-    GREATER         shift and go to state 114
-    LESS            shift and go to state 117
-    AND             shift and go to state 113
-    OR              shift and go to state 120
 
   ! QMARK           [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! PLUS            [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! MINUS           [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! EQUAL           [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! DIFF            [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! LESSEQ          [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! GREATEQ         [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! GREATER         [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! LESS            [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! AND             [ reduce using rule 34 (binop -> exp MULT exp .) ]
-  ! OR              [ reduce using rule 34 (binop -> exp MULT exp .) ]
+  ! PLUS            [ shift and go to state 122 ]
+  ! MINUS           [ shift and go to state 125 ]
   ! MULT            [ shift and go to state 126 ]
   ! DIV             [ shift and go to state 124 ]
   ! MOD             [ shift and go to state 127 ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
+  ! LESSEQ          [ shift and go to state 121 ]
+  ! GREATEQ         [ shift and go to state 115 ]
+  ! GREATER         [ shift and go to state 114 ]
+  ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 159
@@ -4440,39 +4440,39 @@ state 159
     (44) binop -> exp . OR exp
 
     COMMA           reduce using rule 36 (binop -> exp MOD exp .)
+    PLUS            reduce using rule 36 (binop -> exp MOD exp .)
+    MINUS           reduce using rule 36 (binop -> exp MOD exp .)
     MULT            reduce using rule 36 (binop -> exp MOD exp .)
     DIV             reduce using rule 36 (binop -> exp MOD exp .)
     MOD             reduce using rule 36 (binop -> exp MOD exp .)
+    EQUAL           reduce using rule 36 (binop -> exp MOD exp .)
+    DIFF            reduce using rule 36 (binop -> exp MOD exp .)
+    LESSEQ          reduce using rule 36 (binop -> exp MOD exp .)
+    GREATEQ         reduce using rule 36 (binop -> exp MOD exp .)
+    GREATER         reduce using rule 36 (binop -> exp MOD exp .)
+    LESS            reduce using rule 36 (binop -> exp MOD exp .)
+    AND             reduce using rule 36 (binop -> exp MOD exp .)
+    OR              reduce using rule 36 (binop -> exp MOD exp .)
     SCOLON          reduce using rule 36 (binop -> exp MOD exp .)
     RPAREN          reduce using rule 36 (binop -> exp MOD exp .)
     RBRAC           reduce using rule 36 (binop -> exp MOD exp .)
     COLON           reduce using rule 36 (binop -> exp MOD exp .)
     QMARK           shift and go to state 116
-    PLUS            shift and go to state 122
-    MINUS           shift and go to state 125
-    EQUAL           shift and go to state 118
-    DIFF            shift and go to state 123
-    LESSEQ          shift and go to state 121
-    GREATEQ         shift and go to state 115
-    GREATER         shift and go to state 114
-    LESS            shift and go to state 117
-    AND             shift and go to state 113
-    OR              shift and go to state 120
 
   ! QMARK           [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! PLUS            [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! MINUS           [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! EQUAL           [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! DIFF            [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! LESSEQ          [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! GREATEQ         [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! GREATER         [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! LESS            [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! AND             [ reduce using rule 36 (binop -> exp MOD exp .) ]
-  ! OR              [ reduce using rule 36 (binop -> exp MOD exp .) ]
+  ! PLUS            [ shift and go to state 122 ]
+  ! MINUS           [ shift and go to state 125 ]
   ! MULT            [ shift and go to state 126 ]
   ! DIV             [ shift and go to state 124 ]
   ! MOD             [ shift and go to state 127 ]
+  ! EQUAL           [ shift and go to state 118 ]
+  ! DIFF            [ shift and go to state 123 ]
+  ! LESSEQ          [ shift and go to state 121 ]
+  ! GREATEQ         [ shift and go to state 115 ]
+  ! GREATER         [ shift and go to state 114 ]
+  ! LESS            [ shift and go to state 117 ]
+  ! AND             [ shift and go to state 113 ]
+  ! OR              [ shift and go to state 120 ]
 
 
 state 160

@@ -12,13 +12,11 @@ tokens = lex.tokens
 lex.lexer.lineno = 1;
 
 precedence = (
-    ('left', 'MULT', 'DIV', 'MOD'),
-    ('left', 'PLUS', 'MINUS'),
     ('right', 'NOT'),
-    ('left', 'GREATEQ', 'LESSEQ', 'GREATER', 'LESS'),
-    ('left', 'EQUAL', 'DIFF'),
-    ('left', 'AND'),
-    ('left', 'OR'),
+    ('left', 'AND', 'OR'),
+    ('left', 'GREATEQ', 'LESSEQ', 'GREATER', 'LESS', 'EQUAL', 'DIFF'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULT', 'DIV', 'MOD'),
     ('right', 'QMARK')
 );
 
